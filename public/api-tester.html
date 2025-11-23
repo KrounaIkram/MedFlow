@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Medical App - Tester API</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #f4f6f9; margin: 40px; line-height: 1.6; }
+    .card { background: white; padding: 25px; margin-bottom: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    input, textarea, button, select { padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; font-size: 16px; }
+    button { background: #0070f3; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    button:hover { background: #005edc; }
+    pre { background: #000; color: #0f0; padding: 20px; border-radius: 8px; overflow-x: auto; font-size: 14px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+    h1 { color: #0070f3; text-align: center; }
+  </style>
+</head>
+<body>
+  <h1>Medical App — Tester API Ultime</h1>
+
+  <div class="card">
+    <h2>Login</h2>
+    <input id="email" value="admin@example.com" placeholder="email">
+    <input id="password" type="password" value="123456" placeholder="password">
+    <button onclick="login()">SE CONNECTER</button>
+    <pre id="tokenBox">Status : non connecté</pre>
+  </div>
+
+  <div class="card">
+    <h2>Requête libre</h2>
+    <input id="apiUrl" value="/api/patients" placeholder="/api/xxx">
+    <select id="apiMethod"><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option></select>
+    <textarea id="apiBody" rows="8" placeholder='{"firstName":"Jean","lastName":"Dupont"}'></textarea>
+    <button onclick="sendApiRequest()">Envoyer</button>
+    <pre id="responseBox">-</pre>
+  </div>
+
+  <div class="card">
+    <h2>Boutons 1-clic</h2>
+    <div class="grid">
+      <button onclick="quick('/api/users/me')">Mon profil</button>
+      <button onclick="quick('/api/patients')">Patients</button>
+      <button onclick="quick('/api/appointments')">RDV</button>
+      <button onclick="quick('/api/consultations')">Consultations</button>
+      <button onclick="createDoctor()">+ Docteur</button>
+      <button onclick="createPatient()">+ Patient</button>
+      <button onclick="createAppointment()">+ RDV</button>
+      <button onclick="createConsultation()">+ Consultation</button>
+    </div>
+    <pre id="quickBox">-</pre>
+  </div>
+
+<script>
+  let TOKEN = "";
+  const API_BASE = "http://localhost:3000";
+
+async function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const res = await fetch(API_BASE + "/api/auth/callback/credentials", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      csrfToken: await getCsrfToken(),
+      email,
+      password,
+      callbackUrl: "/",
+      json: "true"
+    })
+  });
+
+  const data = await res.json();
+
+  if (data.url) {
+    const sessionRes = await fetch(API_BASE + "/api/auth/session");
+    const session = await sessionRes.json();
+    if (session?.user) {
+      TOKEN = "nextauth-session";
+      document.getElementById("tokenBox").textContent = "CONNECTÉ avec NextAuth ! (session active)";
+      return;
+    }
+  }
+
+  document.getElementById("tokenBox").textContent = "ÉCHEC : " + JSON.stringify(data);
+}
+
+async function getCsrfToken() {
+  const res = await fetch(API_BASE + "/api/auth/csrf");
+  const data = await res.json();
+  return data.csrfToken;
+}
+
+  async function sendApiRequest() {
+    let url = document.getElementById("apiUrl").value.trim();
+    if (!url.startsWith("http")) url = API_BASE + url;
+    const method = document.getElementById("apiMethod").value;
+    const body = document.getElementById("apiBody").value.trim();
+    const opts = {
+      method,
+      headers: {"Content-Type": "application/json", Authorization: "Bearer " + TOKEN}
+    };
+    if (method !== "GET" && body) opts.body = body;
+    const res = await fetch(url, opts);
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = text; }
+    document.getElementById("responseBox").textContent = JSON.stringify(data, null, 2);
+  }
+
+  async function quick(path) {
+    const res = await fetch(API_BASE + path, {headers: {Authorization: "Bearer " + TOKEN}});
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = text; }
+    document.getElementById("quickBox").textContent = JSON.stringify(data, null, 2);
+  }
+
+  function createDoctor() { createUser("DOCTOR"); }
+  function createPatient() { createUser("PATIENT"); }
+  function createUser(role) {
+    const name = prompt("Nom complet ?", role === "DOCTOR" ? "Dr. Martin" : "Jean Dupont");
+    const email = prompt("Email ?", role === "DOCTOR" ? "dr.martin@test.com" : "jean@test.com");
+    if (!name || !email) return;
+    sendBody("/api/auth/register", "POST", {name, email, password: "123456", role: role === "PATIENT" ? undefined : role});
+  }
+
+  /* ================================
+     FIX 1 — createAppointment
+     ================================ */
+  function createAppointment() {
+    const doctorName = prompt("Nom du docteur ?", "Dr. Martin");
+    const patientName = prompt("Nom du patient ?", "Jean Dupont");
+    if (!doctorName || !patientName) return;
+
+    sendBody("/api/appointments", "POST", {
+      date: new Date(Date.now() + 86400000).toISOString(),
+      type: "CONSULTATION",
+      doctorName,
+      patientName,
+      notes: "Test depuis le tester"
+    });
+  }
+
+  /* ================================
+     FIX 2 — createConsultation
+     ================================ */
+  function createConsultation() {
+    const doctorName = prompt("Nom du docteur ?", "Dr. Martin");
+    const patientName = prompt("Nom du patient ?", "Jean Dupont");
+    if (!doctorName || !patientName) return;
+
+    sendBody("/api/consultations", "POST", {
+      doctorName,
+      patientName,
+      datetime: new Date().toISOString(),
+      diagnosis: "Test",
+      notes: "Créé via tester"
+    });
+  }
+
+  async function sendBody(url, method, obj) {
+    document.getElementById("apiUrl").value = url;
+    document.getElementById("apiMethod").value = method;
+    document.getElementById("apiBody").value = JSON.stringify(obj, null, 2);
+    await sendApiRequest();
+  }
+
+</script>
+</body>
+</html>

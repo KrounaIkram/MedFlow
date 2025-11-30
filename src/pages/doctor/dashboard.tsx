@@ -1,296 +1,349 @@
-"use client";
+// pages/doctor/dashboard.tsx
 
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
-import { format } from "date-fns";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 type Appointment = {
-  id: string;
+  id: number;
   date: string;
   type: string;
   status: string;
-  notes?: string | null;
-  patient: { id: string; firstName: string; lastName: string };
-  doctor: { id: string; name: string };
+  notes?: string;
+  doctor: { name: string };
+  patient: { firstName: string; lastName: string };
 };
 
 type Consultation = {
-  id: string;
-  diagnosis: string | null;
-  treatment: string | null;
-  notes: string | null;
+  id: number;
   datetime: string;
+  diagnosis: string;
+  notes?: string;
+  doctor: { name: string };
   patient: { firstName: string; lastName: string };
+  prescription?: {
+    id: number;
+    medications: string[];
+    instructions: string;
+    createdAt: string;
+  };
+};
+
+type Prescription = {
+  id: number;
+  consultationId: number;
+  medications: string[];
+  instructions: string;
+  createdAt: string;
 };
 
 export default function DoctorDashboard() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [consultations, setConsultations] = useState<Consultation[]>([]);
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
-  const [isConsultationOpen, setIsConsultationOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    diagnosis: "",
-    treatment: "",
-    notes: "",
-  });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const [apptRes, consultRes] = await Promise.all([
-        fetch("/api/appointments"),
-        fetch("/api/consultations"),
-      ]);
-      if (apptRes.ok) setAppointments(await apptRes.json());
-      if (consultRes.ok) setConsultations(await consultRes.json());
-    } catch (err) {
-      toast.error("Erreur chargement");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const router = useRouter();
 
+  // Charger les données au montage
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Récupérer les rendez-vous du docteur
+        const apptRes = await fetch("/api/appointments", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+        if (!apptRes.ok) throw new Error("Erreur lors du chargement des rendez-vous");
+        const apptsData = await apptRes.json();
+        setAppointments(apptsData);
+
+        // Récupérer les consultations du docteur (dernières)
+        const consultRes = await fetch("/api/consultations", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+        if (!consultRes.ok) throw new Error("Erreur lors du chargement des consultations");
+        const consultsData = await consultRes.json();
+        setConsultations(consultsData);
+
+      } catch (err: any) {
+        setError(err.message || "Une erreur inattendue est survenue");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchData();
   }, []);
 
-  // Filtrer les RDV du jour POUR CE MÉDECIN
-  const todayAppointments = appointments.filter(appt => {
-    const apptDate = new Date(appt.date);
-    return (
-      apptDate.toDateString() === new Date().toDateString() &&
-      ["SCHEDULED", "CONFIRMED"].includes(appt.status)
-    );
-  });
-
-  // Confirmer un RDV
-  const handleConfirm = async (id: string) => {
-    try {
-      const res = await fetch(`/api/appointments?id=${id}&action=confirm`, { method: "POST" });
-      if (res.ok) {
-        toast.success("RDV confirmé !");
-        fetchData();
-      } else throw new Error();
-    } catch (err) {
-      toast.error("Erreur confirmation");
-    }
-  };
-
-  // Annuler un RDV
-  const handleCancel = async (id: string) => {
-    try {
-      const res = await fetch(`/api/appointments?id=${id}&action=cancel`, { method: "POST" });
-      if (res.ok) {
-        toast.success("RDV annulé !");
-        fetchData();
-      } else throw new Error();
-    } catch (err) {
-      toast.error("Erreur annulation");
-    }
-  };
-
-  // Ouvrir le formulaire de consultation
-  const openConsultationForm = (appt: Appointment) => {
-    setSelectedAppointment(appt);
-    setIsConsultationOpen(true);
-    setFormData({ diagnosis: "", treatment: "", notes: "" });
-  };
-
-  // Soumettre la consultation
-  const handleSubmitConsultation = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedAppointment) return;
+  // Fonction pour confirmer un RDV
+  const confirmAppointment = async (appointmentId: number) => {
+    if (!confirm("Confirmer ce rendez-vous ?")) return;
 
     try {
-      const res = await fetch("/api/consultations", {
-        method: "POST",
+      const res = await fetch("/api/appointments", {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          appointmentId: selectedAppointment.id,
-          diagnosis: formData.diagnosis,
-          treatment: formData.treatment,
-          notes: formData.notes,
+          appointmentId: appointmentId.toString(),
+          date: new Date().toISOString(), // On ne change pas la date ici, juste le statut
+          type: "CONSULTATION", // Type par défaut, à adapter si besoin
+          notes: "Rendez-vous confirmé par le médecin.",
         }),
       });
 
-      if (res.ok) {
-        toast.success("Consultation enregistrée !");
-        setIsConsultationOpen(false);
-        fetchData();
-      } else throw new Error();
-    } catch (err) {
-      toast.error("Erreur enregistrement");
+      if (!res.ok) throw new Error("Échec de la confirmation");
+
+      // Mettre à jour localement
+      setAppointments(prev =>
+        prev.map(appt =>
+          appt.id === appointmentId ? { ...appt, status: "CONFIRMED" } : appt
+        )
+      );
+
+      alert("Rendez-vous confirmé avec succès !");
+    } catch (err: any) {
+      alert(`Erreur : ${err.message}`);
     }
   };
 
-  // Télécharger l'ordonnance PDF
-  const downloadPrescription = (consultationId: string) => {
-    window.open(`/api/prescriptions/pdf/${consultationId}`, "_blank");
+  // Fonction pour annuler un RDV
+  const cancelAppointment = async (appointmentId: number) => {
+    if (!confirm("Annuler ce rendez-vous ?")) return;
+
+    try {
+      const res = await fetch("/api/appointments", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          appointmentId: appointmentId.toString(),
+          date: new Date().toISOString(),
+          type: "CONSULTATION",
+          notes: "Rendez-vous annulé par le médecin.",
+        }),
+      });
+
+      if (!res.ok) throw new Error("Échec de l'annulation");
+
+      // Mettre à jour localement
+      setAppointments(prev =>
+        prev.map(appt =>
+          appt.id === appointmentId ? { ...appt, status: "CANCELLED" } : appt
+        )
+      );
+
+      alert("Rendez-vous annulé avec succès !");
+    } catch (err: any) {
+      alert(`Erreur : ${err.message}`);
+    }
   };
 
+  // Fonction pour générer une ordonnance PDF (simulée ici, à remplacer par votre logique réelle)
+  const generatePrescriptionPDF = (consultationId: number) => {
+    alert(`Génération de l'ordonnance PDF pour la consultation #${consultationId}...`);
+    // Ici, vous pouvez rediriger vers une page de génération PDF ou appeler une API dédiée
+    // Exemple : router.push(`/prescriptions/${consultationId}/pdf`);
+  };
+
+  // Gestion du formulaire de création de consultation
+  const [newConsultation, setNewConsultation] = useState({
+    patientName: "",
+    diagnosis: "",
+    notes: "",
+    medications: "", // Pour l'ordonnance
+    instructions: "",
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setNewConsultation(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmitConsultation = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!newConsultation.patientName.trim()) {
+      alert("Le nom du patient est requis.");
+      return;
+    }
+
+    try {
+      // Créer la consultation
+      const consultRes = await fetch("/api/consultations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          doctorName: "Dr. Votre Nom", // À récupérer dynamiquement si possible
+          patientName: newConsultation.patientName,
+          datetime: new Date().toISOString(),
+          duration: 30,
+          diagnosis: newConsultation.diagnosis,
+          notes: newConsultation.notes,
+        }),
+      });
+
+      if (!consultRes.ok) throw new Error("Échec de la création de la consultation");
+
+      const createdConsult = await consultRes.json();
+
+      // Créer l'ordonnance associée
+      const prescRes = await fetch("/api/prescriptions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          consultationId: createdConsult.id,
+          medications: newConsultation.medications.split(",").map(m => m.trim()).filter(Boolean),
+          instructions: newConsultation.instructions,
+        }),
+      });
+
+      if (!prescRes.ok) throw new Error("Échec de la création de l'ordonnance");
+
+      const createdPresc = await prescRes.json();
+
+      // Réinitialiser le formulaire
+      setNewConsultation({
+        patientName: "",
+        diagnosis: "",
+        notes: "",
+        medications: "",
+        instructions: "",
+      });
+
+      alert("Consultation et ordonnance créées avec succès !");
+      // Optionnel : recharger les données
+      // window.location.reload(); // Ou mettre à jour l'état localement
+
+    } catch (err: any) {
+      alert(`Erreur : ${err.message}`);
+    }
+  };
+
+  if (loading) return <div>Chargement...</div>;
+  if (error) return <div style={{ color: 'red' }}>Erreur : {error}</div>;
+
+  // Filtrer les RDV d'aujourd'hui
+  const today = new Date().toDateString();
+  const todaysAppointments = appointments.filter(
+    appt => new Date(appt.date).toDateString() === today
+  );
+
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8 text-center">Dashboard Médecin</h1>
+    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+      <h1>DashBoard Médecin</h1>
 
-      {loading ? (
-        <p className="text-center">Chargement...</p>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Rendez-vous du jour */}
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Rendez-vous Aujourd'hui</h2>
-            {todayAppointments.length === 0 ? (
-              <p>Aucun rendez-vous aujourd'hui.</p>
-            ) : (
-              <div className="space-y-4">
-                {todayAppointments.map(appt => (
-                  <div key={appt.id} className="p-4 border rounded-lg">
-                    <p className="font-medium">{appt.patient.firstName} {appt.patient.lastName}</p>
-                    <p className="text-sm text-gray-600">
-                      {format(new Date(appt.date), "HH:mm")} • {appt.type}
-                    </p>
-                    <p className="text-sm mt-1">
-                      <span className="font-semibold">Statut:</span>{" "}
-                      <span className={
-                        appt.status === "SCHEDULED" 
-                          ? "text-yellow-600" 
-                          : appt.status === "CONFIRMED" 
-                            ? "text-green-600" 
-                            : "text-red-600"
-                      }>
-                        {appt.status}
-                      </span>
-                    </p>
-                    <div className="flex gap-2 mt-3">
-                      {appt.status === "SCHEDULED" && (
-                        <>
-                          <button
-                            onClick={() => handleConfirm(appt.id)}
-                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
-                          >
-                            Confirmer
-                          </button>
-                          <button
-                            onClick={() => handleCancel(appt.id)}
-                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
-                          >
-                            Annuler
-                          </button>
-                        </>
-                      )}
-                      {["SCHEDULED", "CONFIRMED"].includes(appt.status) && (
-                        <button
-                          onClick={() => openConsultationForm(appt)}
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
-                        >
-                          Consulter
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
+      {/* Section Rendez-vous Aujourd'hui */}
+      <section>
+        <h2>Rendez-vous Aujourd'hui</h2>
+        {todaysAppointments.length > 0 ? (
+          <ul>
+            {todaysAppointments.map((appt) => (
+              <li key={appt.id}>
+                <strong>{appt.patient.firstName} {appt.patient.lastName}</strong> - {new Date(appt.date).toLocaleTimeString()}
+                <br />
+                Type: {appt.type}
+                <br />
+                Statut: {appt.status}
+                <br />
+                <button onClick={() => confirmAppointment(appt.id)} disabled={appt.status !== "SCHEDULED"}>
+                  Confirmer
+                </button>
+                <button onClick={() => cancelAppointment(appt.id)} disabled={appt.status !== "SCHEDULED"}>
+                  Annuler
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>Aucun rendez-vous aujourd'hui.</p>
+        )}
+      </section>
 
-          {/* Dernières consultations */}
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Dernières Consultations</h2>
-            {consultations.length === 0 ? (
-              <p>Aucune consultation.</p>
-            ) : (
-              <div className="space-y-4">
-                {consultations.slice(0, 5).map(cons => (
-                  <div key={cons.id} className="p-4 border rounded-lg">
-                    <p className="font-medium">{cons.patient.firstName} {cons.patient.lastName}</p>
-                    <p className="text-sm text-gray-600">
-                      {format(new Date(cons.datetime), "dd/MM/yyyy HH:mm")}
-                    </p>
-                    {cons.diagnosis && (
-                      <p className="mt-2 text-sm">
-                        <span className="font-semibold">Diagnostic:</span> {cons.diagnosis}
-                      </p>
-                    )}
-                    <button
-                      onClick={() => downloadPrescription(cons.id)}
-                      className="mt-2 bg-gray-700 hover:bg-gray-800 text-white px-3 py-1 rounded text-sm"
-                    >
-                      Ordonnance PDF
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-        </div>
-      )}
-
-      {/* Modal Consultation */}
-      {isConsultationOpen && selectedAppointment && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg w-full max-w-2xl">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">
-                  Consultation - {selectedAppointment.patient.firstName} {selectedAppointment.patient.lastName}
-                </h2>
-                <button onClick={() => setIsConsultationOpen(false)}>✕</button>
-              </div>
-
-              <form onSubmit={handleSubmitConsultation} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Diagnostic</label>
-                  <textarea
-                    value={formData.diagnosis}
-                    onChange={e => setFormData({ ...formData, diagnosis: e.target.value })}
-                    className="w-full p-2 border rounded"
-                    rows={3}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Traitement</label>
-                  <textarea
-                    value={formData.treatment}
-                    onChange={e => setFormData({ ...formData, treatment: e.target.value })}
-                    className="w-full p-2 border rounded"
-                    rows={3}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Notes</label>
-                  <textarea
-                    value={formData.notes}
-                    onChange={e => setFormData({ ...formData, notes: e.target.value })}
-                    className="w-full p-2 border rounded"
-                    rows={2}
-                  />
-                </div>
-
-                <div className="flex justify-end gap-3 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setIsConsultationOpen(false)}
-                    className="px-4 py-2 border rounded"
-                  >
-                    Annuler
+      {/* Section Dernières Consultations */}
+      <section>
+        <h2>Dernières Consultations</h2>
+        {consultations.length > 0 ? (
+          <ul>
+            {consultations.map((consult) => (
+              <li key={consult.id}>
+                <strong>{consult.patient.firstName} {consult.patient.lastName}</strong>
+                <br />
+                {new Date(consult.datetime).toLocaleString()}
+                <br />
+                Diagnostic: {consult.diagnosis}
+                <br />
+                {consult.prescription && (
+                  <button onClick={() => generatePrescriptionPDF(consult.id)}>
+                    Ordonnance PDF
                   </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
-                  >
-                    Enregistrer
-                  </button>
-                </div>
-              </form>
-            </div>
+                )}
+                {!consult.prescription && (
+                  <span style={{ color: 'gray' }}>Pas d'ordonnance associée</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>Aucune consultation récente.</p>
+        )}
+      </section>
+
+      {/* Formulaire Nouvelle Consultation */}
+      <section>
+        <h2>Créer une Nouvelle Consultation</h2>
+        <form onSubmit={handleSubmitConsultation}>
+          <div>
+            <label>Patient (Nom complet):</label>
+            <input
+              type="text"
+              name="patientName"
+              value={newConsultation.patientName}
+              onChange={handleInputChange}
+              required
+            />
           </div>
-        </div>
-      )}
+          <div>
+            <label>Diagnostic:</label>
+            <textarea
+              name="diagnosis"
+              value={newConsultation.diagnosis}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <label>Notes:</label>
+            <textarea
+              name="notes"
+              value={newConsultation.notes}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <label>Médicaments (séparés par des virgules):</label>
+            <input
+              type="text"
+              name="medications"
+              value={newConsultation.medications}
+              onChange={handleInputChange}
+              placeholder="Ex: Paracétamol, Ibuprofène"
+            />
+          </div>
+          <div>
+            <label>Instructions:</label>
+            <textarea
+              name="instructions"
+              value={newConsultation.instructions}
+              onChange={handleInputChange}
+              placeholder="Ex: Prendre 1 comprimé toutes les 6 heures"
+            />
+          </div>
+          <button type="submit">Enregistrer Consultation & Ordonnance</button>
+        </form>
+      </section>
     </div>
   );
 }

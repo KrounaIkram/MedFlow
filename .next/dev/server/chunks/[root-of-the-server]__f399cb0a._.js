@@ -358,7 +358,6 @@ async function handler(req, res) {
     }
     // GET - Liste tous les RDV ou ceux du patient
     if (req.method === "GET") {
-        let where = {};
         if (user.role === "PATIENT") {
             const patient = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prisma"].patient.findFirst({
                 where: {
@@ -366,14 +365,20 @@ async function handler(req, res) {
                 }
             });
             if (!patient) return res.status(200).json([]);
-            where.patientId = patient.id;
-        } else if (user.role === "DOCTOR") {
-            // ✅ FILTRE PAR MÉDECIN CONNECTÉ
-            where.doctorId = user.id;
+            const appts = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prisma"].appointment.findMany({
+                where: {
+                    patientId: patient.id
+                },
+                include: {
+                    doctor: true
+                },
+                orderBy: {
+                    date: "asc"
+                }
+            });
+            return res.status(200).json(appts);
         }
-        // Pour ADMIN/RECEPTIONIST → tous les RDV (comportement existant)
         const appts = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prisma"].appointment.findMany({
-            where,
             include: {
                 doctor: true,
                 patient: true

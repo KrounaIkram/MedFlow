@@ -11,6 +11,9 @@ self.__BUILD_MANIFEST = {
   "/patient": [
     "static/chunks/pages/patient.js"
   ],
+  "/receptionist/dashboard": [
+    "static/chunks/pages/receptionist/dashboard.js"
+  ],
   "/register": [
     "static/chunks/pages/register.js"
   ],
@@ -45,6 +48,7 @@ self.__BUILD_MANIFEST = {
     "/doctor/dashboard",
     "/login",
     "/patient",
+    "/receptionist/dashboard",
     "/register"
   ]
 };self.__BUILD_MANIFEST_CB && self.__BUILD_MANIFEST_CB()

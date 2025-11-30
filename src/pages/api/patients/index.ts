@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if (req.method === "POST") {
-    const session = await requireRole(req, res, ["ADMIN", "DOCTOR"]);
+    const session = await requireRole(req, res, ["ADMIN", "DOCTOR","RECEPTIONIST"]);
     if (!session) return;
 
     const parse = patientCreateSchema.safeParse(req.body);

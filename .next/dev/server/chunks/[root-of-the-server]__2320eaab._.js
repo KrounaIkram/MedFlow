@@ -145,7 +145,8 @@ async function handler(req, res) {
     if (req.method === "POST") {
         const session = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$server$2f$rbac$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["requireRole"])(req, res, [
             "ADMIN",
-            "DOCTOR"
+            "DOCTOR",
+            "RECEPTIONIST"
         ]);
         if (!session) return;
         const parse = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$server$2f$validators$2f$patient$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["patientCreateSchema"].safeParse(req.body);

@@ -30,13 +30,14 @@ export default function LoginPage() {
         // 🔥 Redirection selon rôle
         const sessionRes = await fetch("/api/auth/session");
         const sessionData = await sessionRes.json();
-
         const role = sessionData?.user?.role;
 
         if (role === "PATIENT") {
-          window.location.href = "/patient"; // <-- ici l'interface patient
+          window.location.href = "/patient";
         } else if (role === "DOCTOR") {
           window.location.href = "/doctor/dashboard";
+        } else if (role === "RECEPTIONIST") {
+          window.location.href = "/receptionist/dashboard";
         } else if (role === "ADMIN") {
           window.location.href = "/admin/dashboard";
         } else {
@@ -52,13 +53,35 @@ export default function LoginPage() {
 
   return (
     <div className="bg-[#eaf7ff] min-h-screen flex justify-center items-center px-4">
-      <form onSubmit={onSubmit} className="bg-white p-8 md:p-12 rounded-3xl shadow-lg w-full max-w-[430px]">
-        <h1 className="text-2xl font-bold text-blue-600 mb-6 text-center">DiagnoTech Login</h1>
+      <form
+        onSubmit={onSubmit}
+        className="bg-white p-8 md:p-12 rounded-3xl shadow-lg w-full max-w-[430px]"
+      >
+        <h1 className="text-2xl font-bold text-blue-600 mb-6 text-center">
+          DiagnoTech Login
+        </h1>
 
-        <input type="email" name="email" placeholder="Email" required className="w-full mb-4 p-2 border-b" />
-        <input type="password" name="password" placeholder="Mot de passe" required minLength={6} className="w-full mb-4 p-2 border-b" />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          required
+          className="w-full mb-4 p-2 border-b"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Mot de passe"
+          required
+          minLength={6}
+          className="w-full mb-4 p-2 border-b"
+        />
 
-        <button type="submit" disabled={isLoading} className="w-full bg-blue-600 hover:bg-blue-800 text-white py-2 rounded-full">
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full bg-blue-600 hover:bg-blue-800 text-white py-2 rounded-full"
+        >
           {isLoading ? "Connexion..." : "Se connecter"}
         </button>
       </form>

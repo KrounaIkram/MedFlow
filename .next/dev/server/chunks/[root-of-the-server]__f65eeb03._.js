@@ -84,9 +84,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$server$2f$rbac$2e$ts_
 ;
 async function handler(req, res) {
     try {
-        // -------------------------------------
-        // GET ALL INVOICES (ADMIN, RECEPTIONIST)
-        // -------------------------------------
+        // GET - Liste des factures
         if (req.method === "GET") {
             const session = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$server$2f$rbac$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["requireRole"])(req, res, [
                 "ADMIN",
@@ -98,15 +96,21 @@ async function handler(req, res) {
                     createdAt: "desc"
                 },
                 include: {
-                    patient: true,
+                    patient: {
+                        select: {
+                            id: true,
+                            firstName: true,
+                            lastName: true,
+                            email: true,
+                            phone: true
+                        }
+                    },
                     consultation: true
                 }
             });
             return res.status(200).json(invoices);
         }
-        // --------------------
-        // CREATE INVOICE (REC)
-        // --------------------
+        // POST - Créer une facture
         if (req.method === "POST") {
             const session = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$server$2f$rbac$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["requireRole"])(req, res, [
                 "ADMIN",
@@ -121,9 +125,21 @@ async function handler(req, res) {
                     amount,
                     currency: currency ?? "eur",
                     status: "PENDING"
+                },
+                include: {
+                    patient: {
+                        select: {
+                            id: true,
+                            firstName: true,
+                            lastName: true,
+                            email: true,
+                            phone: true
+                        }
+                    },
+                    consultation: true
                 }
             });
-            return res.status(201).json(invoice);
+            return res.status(201).json(invoice); // ✅ Correction : 201 au lieu de 21
         }
         res.setHeader("Allow", [
             "GET",

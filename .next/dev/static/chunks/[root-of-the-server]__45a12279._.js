@@ -503,9 +503,11 @@ function LoginPage() {
                 const sessionData = await sessionRes.json();
                 const role = sessionData?.user?.role;
                 if (role === "PATIENT") {
-                    window.location.href = "/patient"; // <-- ici l'interface patient
+                    window.location.href = "/patient";
                 } else if (role === "DOCTOR") {
                     window.location.href = "/doctor/dashboard";
+                } else if (role === "RECEPTIONIST") {
+                    window.location.href = "/receptionist/dashboard";
                 } else if (role === "ADMIN") {
                     window.location.href = "/admin/dashboard";
                 } else {
@@ -529,7 +531,7 @@ function LoginPage() {
                     children: "DiagnoTech Login"
                 }, void 0, false, {
                     fileName: "[project]/src/pages/login.tsx",
-                    lineNumber: 56,
+                    lineNumber: 60,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -540,7 +542,7 @@ function LoginPage() {
                     className: "w-full mb-4 p-2 border-b"
                 }, void 0, false, {
                     fileName: "[project]/src/pages/login.tsx",
-                    lineNumber: 58,
+                    lineNumber: 64,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -552,7 +554,7 @@ function LoginPage() {
                     className: "w-full mb-4 p-2 border-b"
                 }, void 0, false, {
                     fileName: "[project]/src/pages/login.tsx",
-                    lineNumber: 59,
+                    lineNumber: 71,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -562,18 +564,18 @@ function LoginPage() {
                     children: isLoading ? "Connexion..." : "Se connecter"
                 }, void 0, false, {
                     fileName: "[project]/src/pages/login.tsx",
-                    lineNumber: 61,
+                    lineNumber: 80,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/pages/login.tsx",
-            lineNumber: 55,
+            lineNumber: 56,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/pages/login.tsx",
-        lineNumber: 54,
+        lineNumber: 55,
         columnNumber: 5
     }, this);
 }

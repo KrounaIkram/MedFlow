@@ -4,24 +4,31 @@ import { requireRole } from "../../../server/rbac";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    // -------------------------------------
-    // GET ALL INVOICES (ADMIN, RECEPTIONIST)
-    // -------------------------------------
+    // GET - Liste des factures
     if (req.method === "GET") {
       const session = await requireRole(req, res, ["ADMIN", "RECEPTIONIST"]);
       if (!session) return;
 
       const invoices = await prisma.invoice.findMany({
         orderBy: { createdAt: "desc" },
-        include: { patient: true, consultation: true },
+        include: {
+          patient: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+              phone: true
+            }
+          },
+          consultation: true
+        },
       });
 
       return res.status(200).json(invoices);
     }
 
-    // --------------------
-    // CREATE INVOICE (REC)
-    // --------------------
+    // POST - Créer une facture
     if (req.method === "POST") {
       const session = await requireRole(req, res, ["ADMIN", "RECEPTIONIST"]);
       if (!session) return;
@@ -36,9 +43,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           currency: currency ?? "eur",
           status: "PENDING",
         },
+        include: {
+          patient: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+              phone: true
+            }
+          },
+          consultation: true
+        },
       });
 
-      return res.status(201).json(invoice);
+      return res.status(201).json(invoice); // ✅ Correction : 201 au lieu de 21
     }
 
     res.setHeader("Allow", ["GET", "POST"]);

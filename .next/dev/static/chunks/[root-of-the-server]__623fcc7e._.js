@@ -472,207 +472,57 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react/jsx-dev-runtime.js [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react/index.js [client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$router$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/router.js [client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$auth$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next-auth/react/index.js [client] (ecmascript)");
 ;
-var _s = __turbopack_context__.k.signature();
+var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.signature(), _s2 = __turbopack_context__.k.signature(), _s3 = __turbopack_context__.k.signature();
 ;
 ;
 function DoctorDashboard() {
     _s();
+    const { data: session, status } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$auth$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useSession"])();
+    const [activeTab, setActiveTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])("agenda");
     const [appointments, setAppointments] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])([]);
+    const [patients, setPatients] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [consultations, setConsultations] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])([]);
-    const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])(true);
-    const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])(null);
-    const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$router$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useRouter"])();
-    // Charger les données au montage
+    const [prescriptions, setPrescriptions] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])([]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "DoctorDashboard.useEffect": ()=>{
-            const fetchData = {
-                "DoctorDashboard.useEffect.fetchData": async ()=>{
+            if (!session) return;
+            const loadData = {
+                "DoctorDashboard.useEffect.loadData": async ()=>{
                     try {
-                        setLoading(true);
-                        setError(null);
-                        // Récupérer les rendez-vous du docteur
-                        const apptRes = await fetch("/api/appointments", {
-                            method: "GET",
-                            headers: {
-                                "Content-Type": "application/json"
-                            }
-                        });
-                        if (!apptRes.ok) throw new Error("Erreur lors du chargement des rendez-vous");
-                        const apptsData = await apptRes.json();
-                        setAppointments(apptsData);
-                        // Récupérer les consultations du docteur (dernières)
-                        const consultRes = await fetch("/api/consultations", {
-                            method: "GET",
-                            headers: {
-                                "Content-Type": "application/json"
-                            }
-                        });
-                        if (!consultRes.ok) throw new Error("Erreur lors du chargement des consultations");
-                        const consultsData = await consultRes.json();
-                        setConsultations(consultsData);
+                        const apptRes = await fetch("/api/appointments");
+                        if (apptRes.ok) setAppointments(await apptRes.json());
+                        const patRes = await fetch("/api/patients");
+                        if (patRes.ok) setPatients(await patRes.json());
+                        const consultRes = await fetch("/api/consultations");
+                        if (consultRes.ok) setConsultations(await consultRes.json());
+                        const prescRes = await fetch("/api/prescriptions");
+                        if (prescRes.ok) setPrescriptions(await prescRes.json());
                     } catch (err) {
-                        setError(err.message || "Une erreur inattendue est survenue");
-                    } finally{
-                        setLoading(false);
+                        console.error(err);
                     }
                 }
-            }["DoctorDashboard.useEffect.fetchData"];
-            fetchData();
+            }["DoctorDashboard.useEffect.loadData"];
+            loadData();
         }
-    }["DoctorDashboard.useEffect"], []);
-    // Fonction pour confirmer un RDV
-    const confirmAppointment = async (appointmentId)=>{
-        if (!confirm("Confirmer ce rendez-vous ?")) return;
-        try {
-            const res = await fetch("/api/appointments", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    appointmentId: appointmentId.toString(),
-                    date: new Date().toISOString(),
-                    type: "CONSULTATION",
-                    notes: "Rendez-vous confirmé par le médecin."
-                })
-            });
-            if (!res.ok) throw new Error("Échec de la confirmation");
-            // Mettre à jour localement
-            setAppointments((prev)=>prev.map((appt)=>appt.id === appointmentId ? {
-                        ...appt,
-                        status: "CONFIRMED"
-                    } : appt));
-            alert("Rendez-vous confirmé avec succès !");
-        } catch (err) {
-            alert(`Erreur : ${err.message}`);
-        }
-    };
-    // Fonction pour annuler un RDV
-    const cancelAppointment = async (appointmentId)=>{
-        if (!confirm("Annuler ce rendez-vous ?")) return;
-        try {
-            const res = await fetch("/api/appointments", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    appointmentId: appointmentId.toString(),
-                    date: new Date().toISOString(),
-                    type: "CONSULTATION",
-                    notes: "Rendez-vous annulé par le médecin."
-                })
-            });
-            if (!res.ok) throw new Error("Échec de l'annulation");
-            // Mettre à jour localement
-            setAppointments((prev)=>prev.map((appt)=>appt.id === appointmentId ? {
-                        ...appt,
-                        status: "CANCELLED"
-                    } : appt));
-            alert("Rendez-vous annulé avec succès !");
-        } catch (err) {
-            alert(`Erreur : ${err.message}`);
-        }
-    };
-    // Fonction pour générer une ordonnance PDF (simulée ici, à remplacer par votre logique réelle)
-    const generatePrescriptionPDF = (consultationId)=>{
-        alert(`Génération de l'ordonnance PDF pour la consultation #${consultationId}...`);
-    // Ici, vous pouvez rediriger vers une page de génération PDF ou appeler une API dédiée
-    // Exemple : router.push(`/prescriptions/${consultationId}/pdf`);
-    };
-    // Gestion du formulaire de création de consultation
-    const [newConsultation, setNewConsultation] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])({
-        patientName: "",
-        diagnosis: "",
-        notes: "",
-        medications: "",
-        instructions: ""
-    });
-    const handleInputChange = (e)=>{
-        const { name, value } = e.target;
-        setNewConsultation((prev)=>({
-                ...prev,
-                [name]: value
-            }));
-    };
-    const handleSubmitConsultation = async (e)=>{
-        e.preventDefault();
-        if (!newConsultation.patientName.trim()) {
-            alert("Le nom du patient est requis.");
-            return;
-        }
-        try {
-            // Créer la consultation
-            const consultRes = await fetch("/api/consultations", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    doctorName: "Dr. Votre Nom",
-                    patientName: newConsultation.patientName,
-                    datetime: new Date().toISOString(),
-                    duration: 30,
-                    diagnosis: newConsultation.diagnosis,
-                    notes: newConsultation.notes
-                })
-            });
-            if (!consultRes.ok) throw new Error("Échec de la création de la consultation");
-            const createdConsult = await consultRes.json();
-            // Créer l'ordonnance associée
-            const prescRes = await fetch("/api/prescriptions", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    consultationId: createdConsult.id,
-                    medications: newConsultation.medications.split(",").map((m)=>m.trim()).filter(Boolean),
-                    instructions: newConsultation.instructions
-                })
-            });
-            if (!prescRes.ok) throw new Error("Échec de la création de l'ordonnance");
-            const createdPresc = await prescRes.json();
-            // Réinitialiser le formulaire
-            setNewConsultation({
-                patientName: "",
-                diagnosis: "",
-                notes: "",
-                medications: "",
-                instructions: ""
-            });
-            alert("Consultation et ordonnance créées avec succès !");
-        // Optionnel : recharger les données
-        // window.location.reload(); // Ou mettre à jour l'état localement
-        } catch (err) {
-            alert(`Erreur : ${err.message}`);
-        }
-    };
-    if (loading) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+    }["DoctorDashboard.useEffect"], [
+        session
+    ]);
+    if (status === "loading") return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         children: "Chargement..."
     }, void 0, false, {
         fileName: "[project]/src/pages/doctor/dashboard.tsx",
-        lineNumber: 225,
-        columnNumber: 23
+        lineNumber: 50,
+        columnNumber: 36
     }, this);
-    if (error) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        style: {
-            color: 'red'
-        },
-        children: [
-            "Erreur : ",
-            error
-        ]
-    }, void 0, true, {
+    if (!session || session.user.role !== "DOCTOR") return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        children: "Accès refusé"
+    }, void 0, false, {
         fileName: "[project]/src/pages/doctor/dashboard.tsx",
-        lineNumber: 226,
-        columnNumber: 21
+        lineNumber: 51,
+        columnNumber: 58
     }, this);
-    // Filtrer les RDV d'aujourd'hui
-    const today = new Date().toDateString();
-    const todaysAppointments = appointments.filter((appt)=>new Date(appt.date).toDateString() === today);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         style: {
             padding: "20px",
@@ -680,352 +530,1175 @@ function DoctorDashboard() {
         },
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                children: "DashBoard Médecin"
+                children: [
+                    "Bienvenue, Dr. ",
+                    session.user.name
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                lineNumber: 55,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                style: {
+                    marginBottom: "20px",
+                    display: "flex",
+                    gap: "10px"
+                },
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                        onClick: ()=>setActiveTab("agenda"),
+                        style: tabStyle(activeTab === "agenda"),
+                        children: "🗓️ Agenda"
+                    }, void 0, false, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 58,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                        onClick: ()=>setActiveTab("dossiers"),
+                        style: tabStyle(activeTab === "dossiers"),
+                        children: "📁 Dossiers Médicaux"
+                    }, void 0, false, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 61,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                        onClick: ()=>setActiveTab("ordonnances"),
+                        style: tabStyle(activeTab === "ordonnances"),
+                        children: "💊 Ordonnances"
+                    }, void 0, false, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 64,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                        onClick: ()=>setActiveTab("nouvelle"),
+                        style: tabStyle(activeTab === "nouvelle"),
+                        children: "➕ Nouvelle Consultation"
+                    }, void 0, false, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 67,
+                        columnNumber: 9
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                lineNumber: 57,
+                columnNumber: 7
+            }, this),
+            activeTab === "agenda" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(AgendaTab, {
+                appointments: appointments,
+                onAppointmentUpdate: (updatedAppt)=>{
+                    setAppointments((prev)=>prev.map((appt)=>appt.id === updatedAppt.id ? updatedAppt : appt));
+                }
             }, void 0, false, {
                 fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                lineNumber: 236,
-                columnNumber: 7
+                lineNumber: 73,
+                columnNumber: 9
             }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
-                children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                        children: "Rendez-vous Aujourd'hui"
-                    }, void 0, false, {
-                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                        lineNumber: 240,
-                        columnNumber: 9
-                    }, this),
-                    todaysAppointments.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
-                        children: todaysAppointments.map((appt)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
-                                        children: [
-                                            appt.patient.firstName,
-                                            " ",
-                                            appt.patient.lastName
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 245,
-                                        columnNumber: 17
-                                    }, this),
-                                    " - ",
-                                    new Date(appt.date).toLocaleTimeString(),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 246,
-                                        columnNumber: 17
-                                    }, this),
-                                    "Type: ",
-                                    appt.type,
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 248,
-                                        columnNumber: 17
-                                    }, this),
-                                    "Statut: ",
-                                    appt.status,
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 250,
-                                        columnNumber: 17
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                        onClick: ()=>confirmAppointment(appt.id),
-                                        disabled: appt.status !== "SCHEDULED",
-                                        children: "Confirmer"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 251,
-                                        columnNumber: 17
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                        onClick: ()=>cancelAppointment(appt.id),
-                                        disabled: appt.status !== "SCHEDULED",
-                                        children: "Annuler"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 254,
-                                        columnNumber: 17
-                                    }, this)
-                                ]
-                            }, appt.id, true, {
-                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                lineNumber: 244,
-                                columnNumber: 15
-                            }, this))
-                    }, void 0, false, {
-                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                        lineNumber: 242,
-                        columnNumber: 11
-                    }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                        children: "Aucun rendez-vous aujourd'hui."
-                    }, void 0, false, {
-                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                        lineNumber: 261,
-                        columnNumber: 11
-                    }, this)
-                ]
-            }, void 0, true, {
+            activeTab === "dossiers" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(DossiersTab, {
+                patients: patients,
+                consultations: consultations
+            }, void 0, false, {
                 fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                lineNumber: 239,
-                columnNumber: 7
+                lineNumber: 82,
+                columnNumber: 36
             }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
-                children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                        children: "Dernières Consultations"
-                    }, void 0, false, {
-                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                        lineNumber: 267,
-                        columnNumber: 9
-                    }, this),
-                    consultations.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
-                        children: consultations.map((consult)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
-                                        children: [
-                                            consult.patient.firstName,
-                                            " ",
-                                            consult.patient.lastName
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 272,
-                                        columnNumber: 17
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 273,
-                                        columnNumber: 17
-                                    }, this),
-                                    new Date(consult.datetime).toLocaleString(),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 275,
-                                        columnNumber: 17
-                                    }, this),
-                                    "Diagnostic: ",
-                                    consult.diagnosis,
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 277,
-                                        columnNumber: 17
-                                    }, this),
-                                    consult.prescription && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                        onClick: ()=>generatePrescriptionPDF(consult.id),
-                                        children: "Ordonnance PDF"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 279,
-                                        columnNumber: 19
-                                    }, this),
-                                    !consult.prescription && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                        style: {
-                                            color: 'gray'
-                                        },
-                                        children: "Pas d'ordonnance associée"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 284,
-                                        columnNumber: 19
-                                    }, this)
-                                ]
-                            }, consult.id, true, {
-                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                lineNumber: 271,
-                                columnNumber: 15
-                            }, this))
-                    }, void 0, false, {
-                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                        lineNumber: 269,
-                        columnNumber: 11
-                    }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                        children: "Aucune consultation récente."
-                    }, void 0, false, {
-                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                        lineNumber: 290,
-                        columnNumber: 11
-                    }, this)
-                ]
-            }, void 0, true, {
+            activeTab === "ordonnances" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(OrdonnancesTab, {
+                prescriptions: prescriptions,
+                consultations: consultations,
+                onPrescriptionCreated: (newPresc)=>setPrescriptions((prev)=>[
+                            ...prev,
+                            newPresc
+                        ])
+            }, void 0, false, {
                 fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                lineNumber: 266,
-                columnNumber: 7
+                lineNumber: 84,
+                columnNumber: 9
             }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
-                children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                        children: "Créer une Nouvelle Consultation"
-                    }, void 0, false, {
-                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                        lineNumber: 296,
-                        columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
-                        onSubmit: handleSubmitConsultation,
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        children: "Patient (Nom complet):"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 299,
-                                        columnNumber: 13
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        type: "text",
-                                        name: "patientName",
-                                        value: newConsultation.patientName,
-                                        onChange: handleInputChange,
-                                        required: true
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 300,
-                                        columnNumber: 13
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                lineNumber: 298,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        children: "Diagnostic:"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 309,
-                                        columnNumber: 13
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
-                                        name: "diagnosis",
-                                        value: newConsultation.diagnosis,
-                                        onChange: handleInputChange,
-                                        required: true
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 310,
-                                        columnNumber: 13
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                lineNumber: 308,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        children: "Notes:"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 318,
-                                        columnNumber: 13
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
-                                        name: "notes",
-                                        value: newConsultation.notes,
-                                        onChange: handleInputChange
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 319,
-                                        columnNumber: 13
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                lineNumber: 317,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        children: "Médicaments (séparés par des virgules):"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 326,
-                                        columnNumber: 13
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        type: "text",
-                                        name: "medications",
-                                        value: newConsultation.medications,
-                                        onChange: handleInputChange,
-                                        placeholder: "Ex: Paracétamol, Ibuprofène"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 327,
-                                        columnNumber: 13
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                lineNumber: 325,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        children: "Instructions:"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 336,
-                                        columnNumber: 13
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
-                                        name: "instructions",
-                                        value: newConsultation.instructions,
-                                        onChange: handleInputChange,
-                                        placeholder: "Ex: Prendre 1 comprimé toutes les 6 heures"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                        lineNumber: 337,
-                                        columnNumber: 13
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                lineNumber: 335,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                type: "submit",
-                                children: "Enregistrer Consultation & Ordonnance"
-                            }, void 0, false, {
-                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                                lineNumber: 344,
-                                columnNumber: 11
-                            }, this)
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                        lineNumber: 297,
-                        columnNumber: 9
-                    }, this)
-                ]
-            }, void 0, true, {
+            activeTab === "nouvelle" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(NouvelleConsultationTab, {
+                patients: patients,
+                onConsultationCreated: (newConsult)=>setConsultations((prev)=>[
+                            ...prev,
+                            newConsult
+                        ])
+            }, void 0, false, {
                 fileName: "[project]/src/pages/doctor/dashboard.tsx",
-                lineNumber: 295,
-                columnNumber: 7
+                lineNumber: 91,
+                columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/pages/doctor/dashboard.tsx",
-        lineNumber: 235,
+        lineNumber: 54,
         columnNumber: 5
     }, this);
 }
-_s(DoctorDashboard, "XE+/ZyGFKlMHl15vK7Qo41vexZ0=", false, function() {
+_s(DoctorDashboard, "lTYC/ACOoVHY6wepOrGVYWdpSIE=", false, function() {
     return [
-        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$router$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useRouter"]
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$auth$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useSession"]
     ];
 });
 _c = DoctorDashboard;
-var _c;
+// 🗓️ Agenda complet
+const AgendaTab = ({ appointments, onAppointmentUpdate })=>{
+    const getStatusLabel = (status)=>{
+        switch(status){
+            case "DONE":
+                return "✅ Confirmé";
+            case "CANCELLED":
+                return "❌ Annulé";
+            case "SCHEDULED":
+                return "⏳ En attente";
+            default:
+                return status;
+        }
+    };
+    const getStatusColor = (status)=>{
+        switch(status){
+            case "DONE":
+                return "#4caf50";
+            case "CANCELLED":
+                return "#f44336";
+            case "SCHEDULED":
+                return "#ff9800";
+            default:
+                return "black";
+        }
+    };
+    const handleUpdateStatus = async (id, status)=>{
+        try {
+            const res = await fetch(`/api/appointments/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    status
+                })
+            });
+            if (res.ok) {
+                const updatedAppt = await res.json();
+                onAppointmentUpdate(updatedAppt);
+            } else {
+                let errorMessage = "Erreur inconnue";
+                try {
+                    const errData = await res.json();
+                    errorMessage = errData.error || "Impossible de mettre à jour";
+                } catch (e) {
+                    errorMessage = `Erreur ${res.status}: ${res.statusText}`;
+                }
+                alert("Erreur: " + errorMessage);
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Erreur réseau");
+        }
+    };
+    const sortedAppts = [
+        ...appointments
+    ].sort((a, b)=>new Date(a.date).getTime() - new Date(b.date).getTime());
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                children: "🗓️ Tous vos rendez-vous"
+            }, void 0, false, {
+                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                lineNumber: 158,
+                columnNumber: 7
+            }, ("TURBOPACK compile-time value", void 0)),
+            sortedAppts.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                style: {
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "12px"
+                },
+                children: sortedAppts.map((appt)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        style: {
+                            border: "1px solid #ddd",
+                            padding: "14px",
+                            borderRadius: "8px",
+                            backgroundColor: appt.status === "CANCELLED" ? "#ffebee" : "white"
+                        },
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            style: {
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "flex-start"
+                            },
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                            children: [
+                                                appt.patient.firstName,
+                                                " ",
+                                                appt.patient.lastName
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                            lineNumber: 173,
+                                            columnNumber: 19
+                                        }, ("TURBOPACK compile-time value", void 0)),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
+                                            fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                            lineNumber: 173,
+                                            columnNumber: 84
+                                        }, ("TURBOPACK compile-time value", void 0)),
+                                        "📅 ",
+                                        new Date(appt.date).toLocaleString("fr-FR", {
+                                            weekday: 'short',
+                                            day: '2-digit',
+                                            month: 'short',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        }),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
+                                            fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                            lineNumber: 181,
+                                            columnNumber: 19
+                                        }, ("TURBOPACK compile-time value", void 0)),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                            style: {
+                                                color: getStatusColor(appt.status)
+                                            },
+                                            children: getStatusLabel(appt.status)
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                            lineNumber: 182,
+                                            columnNumber: 19
+                                        }, ("TURBOPACK compile-time value", void 0))
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                    lineNumber: 172,
+                                    columnNumber: 17
+                                }, ("TURBOPACK compile-time value", void 0)),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    children: appt.status === "SCHEDULED" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["Fragment"], {
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                onClick: ()=>handleUpdateStatus(appt.id, "DONE"),
+                                                style: {
+                                                    marginRight: "6px",
+                                                    padding: "6px 10px",
+                                                    backgroundColor: "#4caf50",
+                                                    color: "white",
+                                                    border: "none",
+                                                    borderRadius: "4px",
+                                                    cursor: "pointer"
+                                                },
+                                                children: "✅ Confirmer"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                                lineNumber: 189,
+                                                columnNumber: 23
+                                            }, ("TURBOPACK compile-time value", void 0)),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                onClick: ()=>handleUpdateStatus(appt.id, "CANCELLED"),
+                                                style: {
+                                                    padding: "6px 100px",
+                                                    backgroundColor: "#f44336",
+                                                    color: "white",
+                                                    border: "none",
+                                                    borderRadius: "4px",
+                                                    cursor: "pointer"
+                                                },
+                                                children: "❌ Annuler"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                                lineNumber: 203,
+                                                columnNumber: 23
+                                            }, ("TURBOPACK compile-time value", void 0))
+                                        ]
+                                    }, void 0, true)
+                                }, void 0, false, {
+                                    fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                    lineNumber: 186,
+                                    columnNumber: 17
+                                }, ("TURBOPACK compile-time value", void 0))
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                            lineNumber: 171,
+                            columnNumber: 15
+                        }, ("TURBOPACK compile-time value", void 0))
+                    }, appt.id, false, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 162,
+                        columnNumber: 13
+                    }, ("TURBOPACK compile-time value", void 0)))
+            }, void 0, false, {
+                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                lineNumber: 160,
+                columnNumber: 9
+            }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                children: "Aucun rendez-vous trouvé."
+            }, void 0, false, {
+                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                lineNumber: 224,
+                columnNumber: 9
+            }, ("TURBOPACK compile-time value", void 0))
+        ]
+    }, void 0, true, {
+        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+        lineNumber: 157,
+        columnNumber: 5
+    }, ("TURBOPACK compile-time value", void 0));
+};
+_c1 = AgendaTab;
+// 📁 Dossiers Médicaux
+const DossiersTab = ({ patients, consultations })=>{
+    _s1();
+    const [selectedPatient, setSelectedPatient] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const patientConsults = selectedPatient ? consultations.filter((c)=>c.patient.id === selectedPatient.id) : [];
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                children: "📁 Dossiers Médicaux"
+            }, void 0, false, {
+                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                lineNumber: 240,
+                columnNumber: 7
+            }, ("TURBOPACK compile-time value", void 0)),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                style: {
+                    marginBottom: "10px"
+                },
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                        children: "Sélectionner un patient :"
+                    }, void 0, false, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 242,
+                        columnNumber: 9
+                    }, ("TURBOPACK compile-time value", void 0)),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
+                        onChange: (e)=>{
+                            const id = e.target.value;
+                            setSelectedPatient(patients.find((p)=>p.id === id) || null);
+                        },
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                value: "",
+                                children: "-- Tous --"
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                lineNumber: 247,
+                                columnNumber: 11
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            patients.map((p)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                    value: p.id,
+                                    children: [
+                                        p.firstName,
+                                        " ",
+                                        p.lastName
+                                    ]
+                                }, p.id, true, {
+                                    fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                    lineNumber: 249,
+                                    columnNumber: 13
+                                }, ("TURBOPACK compile-time value", void 0)))
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 243,
+                        columnNumber: 9
+                    }, ("TURBOPACK compile-time value", void 0))
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                lineNumber: 241,
+                columnNumber: 7
+            }, ("TURBOPACK compile-time value", void 0)),
+            selectedPatient && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                        children: [
+                            "Dossier de ",
+                            selectedPatient.firstName,
+                            " ",
+                            selectedPatient.lastName
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 256,
+                        columnNumber: 11
+                    }, ("TURBOPACK compile-time value", void 0)),
+                    patientConsults.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
+                        children: patientConsults.map((consult)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                        children: new Date(consult.datetime).toLocaleString()
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                        lineNumber: 261,
+                                        columnNumber: 19
+                                    }, ("TURBOPACK compile-time value", void 0)),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
+                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                        lineNumber: 262,
+                                        columnNumber: 19
+                                    }, ("TURBOPACK compile-time value", void 0)),
+                                    "Diagnostic: ",
+                                    consult.diagnosis,
+                                    consult.prescription && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        children: [
+                                            "Ordonnance: ",
+                                            consult.prescription.notes
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                        lineNumber: 263,
+                                        columnNumber: 44
+                                    }, ("TURBOPACK compile-time value", void 0))
+                                ]
+                            }, consult.id, true, {
+                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                lineNumber: 260,
+                                columnNumber: 17
+                            }, ("TURBOPACK compile-time value", void 0)))
+                    }, void 0, false, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 258,
+                        columnNumber: 13
+                    }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                        children: "Aucune consultation."
+                    }, void 0, false, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 268,
+                        columnNumber: 13
+                    }, ("TURBOPACK compile-time value", void 0))
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                lineNumber: 255,
+                columnNumber: 9
+            }, ("TURBOPACK compile-time value", void 0))
+        ]
+    }, void 0, true, {
+        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+        lineNumber: 239,
+        columnNumber: 5
+    }, ("TURBOPACK compile-time value", void 0));
+};
+_s1(DossiersTab, "9STk+ZHt9ZMg/Eo0cVefKm7VM7A=");
+_c2 = DossiersTab;
+// 💊 Ordonnances avec formulaire (lié à une consultation)
+const OrdonnancesTab = ({ prescriptions, consultations, onPrescriptionCreated })=>{
+    _s2();
+    const [selectedConsultationId, setSelectedConsultationId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [medications, setMedications] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])([]);
+    const [notes, setNotes] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [message, setMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const addMedication = ()=>{
+        setMedications((prev)=>[
+                ...prev,
+                {
+                    name: "",
+                    dosage: "",
+                    frequency: "",
+                    duration: "",
+                    notes: ""
+                }
+            ]);
+    };
+    const removeMedication = (index)=>{
+        setMedications((prev)=>prev.filter((_, i)=>i !== index));
+    };
+    const updateMedication = (index, field, value)=>{
+        setMedications((prev)=>prev.map((med, i)=>i === index ? {
+                    ...med,
+                    [field]: value
+                } : med));
+    };
+    const handleSubmit = async (e)=>{
+        e.preventDefault();
+        if (!selectedConsultationId || medications.length === 0) {
+            setMessage("Veuillez sélectionner une consultation et ajouter au moins un médicament.");
+            return;
+        }
+        const selectedConsult = consultations.find((c)=>c.id.toString() === selectedConsultationId);
+        if (!selectedConsult) {
+            setMessage("Consultation invalide.");
+            return;
+        }
+        try {
+            const res = await fetch("/api/prescriptions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    consultationId: selectedConsultationId,
+                    patientId: selectedConsult.patient.id,
+                    medications,
+                    notes
+                })
+            });
+            if (res.ok) {
+                const newPresc = await res.json();
+                onPrescriptionCreated(newPresc);
+                setMessage("Ordonnance créée avec succès !");
+                setSelectedConsultationId("");
+                setMedications([]);
+                setNotes("");
+            } else {
+                let errorMessage = "Erreur inconnue";
+                try {
+                    const errData = await res.json();
+                    errorMessage = errData.error || "Impossible de créer l'ordonnance";
+                } catch (e) {
+                    errorMessage = `Erreur ${res.status}: ${res.statusText}`;
+                }
+                setMessage("Erreur: " + errorMessage);
+            }
+        } catch (err) {
+            console.error(err);
+            setMessage("Erreur réseau");
+        }
+    };
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                children: "💊 Mes Ordonnances"
+            }, void 0, false, {
+                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                lineNumber: 352,
+                columnNumber: 7
+            }, ("TURBOPACK compile-time value", void 0)),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                style: {
+                    border: "1px solid #ddd",
+                    padding: "20px",
+                    borderRadius: "8px",
+                    marginBottom: "20px",
+                    backgroundColor: "#f9f9f9"
+                },
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                        children: "➕ Créer une nouvelle ordonnance"
+                    }, void 0, false, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 356,
+                        columnNumber: 9
+                    }, ("TURBOPACK compile-time value", void 0)),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
+                        onSubmit: handleSubmit,
+                        style: {
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "12px"
+                        },
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                children: [
+                                    "Consultation :",
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
+                                        value: selectedConsultationId,
+                                        onChange: (e)=>setSelectedConsultationId(e.target.value),
+                                        required: true,
+                                        style: {
+                                            width: "100%",
+                                            padding: "8px",
+                                            marginTop: "4px"
+                                        },
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                value: "",
+                                                children: "-- Sélectionner une consultation --"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                                lineNumber: 367,
+                                                columnNumber: 15
+                                            }, ("TURBOPACK compile-time value", void 0)),
+                                            consultations.map((c)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                    value: c.id.toString(),
+                                                    children: [
+                                                        new Date(c.datetime).toLocaleDateString("fr-FR"),
+                                                        " - ",
+                                                        c.patient.firstName,
+                                                        " ",
+                                                        c.patient.lastName
+                                                    ]
+                                                }, c.id, true, {
+                                                    fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                                    lineNumber: 369,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0)))
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                        lineNumber: 361,
+                                        columnNumber: 13
+                                    }, ("TURBOPACK compile-time value", void 0))
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                lineNumber: 359,
+                                columnNumber: 11
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
+                                        children: "Médicaments"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                        lineNumber: 377,
+                                        columnNumber: 13
+                                    }, ("TURBOPACK compile-time value", void 0)),
+                                    medications.map((med, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            style: {
+                                                display: "grid",
+                                                gridTemplateColumns: "1fr 1fr 1fr 1fr auto auto",
+                                                gap: "6px",
+                                                marginBottom: "6px",
+                                                alignItems: "center"
+                                            },
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                    type: "text",
+                                                    placeholder: "Médicament",
+                                                    value: med.name,
+                                                    onChange: (e)=>updateMedication(index, "name", e.target.value),
+                                                    required: true,
+                                                    style: {
+                                                        padding: "6px",
+                                                        fontSize: "14px"
+                                                    }
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                                    lineNumber: 380,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0)),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                    type: "text",
+                                                    placeholder: "Dosage",
+                                                    value: med.dosage,
+                                                    onChange: (e)=>updateMedication(index, "dosage", e.target.value),
+                                                    style: {
+                                                        padding: "6px",
+                                                        fontSize: "14px"
+                                                    }
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                                    lineNumber: 381,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0)),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                    type: "text",
+                                                    placeholder: "Fréquence",
+                                                    value: med.frequency,
+                                                    onChange: (e)=>updateMedication(index, "frequency", e.target.value),
+                                                    style: {
+                                                        padding: "6px",
+                                                        fontSize: "14px"
+                                                    }
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                                    lineNumber: 382,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0)),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                    type: "text",
+                                                    placeholder: "Durée",
+                                                    value: med.duration,
+                                                    onChange: (e)=>updateMedication(index, "duration", e.target.value),
+                                                    style: {
+                                                        padding: "6px",
+                                                        fontSize: "14px"
+                                                    }
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                                    lineNumber: 383,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0)),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                    type: "text",
+                                                    placeholder: "Notes",
+                                                    value: med.notes,
+                                                    onChange: (e)=>updateMedication(index, "notes", e.target.value),
+                                                    style: {
+                                                        padding: "6px",
+                                                        fontSize: "14px"
+                                                    }
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                                    lineNumber: 384,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0)),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                    type: "button",
+                                                    onClick: ()=>removeMedication(index),
+                                                    style: {
+                                                        padding: "4px 8px",
+                                                        backgroundColor: "#f44336",
+                                                        color: "white",
+                                                        border: "none",
+                                                        borderRadius: "4px",
+                                                        cursor: "pointer"
+                                                    },
+                                                    children: "❌"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                                    lineNumber: 385,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0))
+                                            ]
+                                        }, index, true, {
+                                            fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                            lineNumber: 379,
+                                            columnNumber: 15
+                                        }, ("TURBOPACK compile-time value", void 0))),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                        type: "button",
+                                        onClick: addMedication,
+                                        style: {
+                                            marginTop: "8px",
+                                            padding: "6px 12px",
+                                            backgroundColor: "#2196f3",
+                                            color: "white",
+                                            border: "none",
+                                            borderRadius: "4px",
+                                            cursor: "pointer"
+                                        },
+                                        children: "➕ Ajouter un médicament"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                        lineNumber: 388,
+                                        columnNumber: 13
+                                    }, ("TURBOPACK compile-time value", void 0))
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                lineNumber: 376,
+                                columnNumber: 11
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                children: [
+                                    "Notes générales :",
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
+                                        value: notes,
+                                        onChange: (e)=>setNotes(e.target.value),
+                                        placeholder: "Instructions supplémentaires...",
+                                        rows: 2,
+                                        style: {
+                                            width: "100%",
+                                            padding: "8px",
+                                            marginTop: "4px",
+                                            fontSize: "14px"
+                                        }
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                        lineNumber: 393,
+                                        columnNumber: 13
+                                    }, ("TURBOPACK compile-time value", void 0))
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                lineNumber: 391,
+                                columnNumber: 11
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                type: "submit",
+                                style: {
+                                    padding: "10px 16px",
+                                    backgroundColor: "#0070f3",
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: "4px",
+                                    cursor: "pointer",
+                                    fontWeight: "bold"
+                                },
+                                children: "📄 Générer l'ordonnance"
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                lineNumber: 402,
+                                columnNumber: 11
+                            }, ("TURBOPACK compile-time value", void 0))
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 357,
+                        columnNumber: 9
+                    }, ("TURBOPACK compile-time value", void 0)),
+                    message && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                        style: {
+                            color: message.includes("Erreur") ? "red" : "green",
+                            margin: "10px 0",
+                            fontWeight: "bold"
+                        },
+                        children: message
+                    }, void 0, false, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 406,
+                        columnNumber: 21
+                    }, ("TURBOPACK compile-time value", void 0))
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                lineNumber: 355,
+                columnNumber: 7
+            }, ("TURBOPACK compile-time value", void 0)),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                children: "📋 Liste des ordonnances"
+            }, void 0, false, {
+                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                lineNumber: 410,
+                columnNumber: 7
+            }, ("TURBOPACK compile-time value", void 0)),
+            prescriptions.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                style: {
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "12px"
+                },
+                children: prescriptions.map((presc)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        style: {
+                            border: "1px solid #eee",
+                            padding: "12px",
+                            borderRadius: "6px"
+                        },
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                        children: "Patient:"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                        lineNumber: 415,
+                                        columnNumber: 18
+                                    }, ("TURBOPACK compile-time value", void 0)),
+                                    " ",
+                                    presc.patient.firstName,
+                                    " ",
+                                    presc.patient.lastName
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                lineNumber: 415,
+                                columnNumber: 15
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                        children: "Consultation:"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                        lineNumber: 416,
+                                        columnNumber: 18
+                                    }, ("TURBOPACK compile-time value", void 0)),
+                                    " ",
+                                    new Date(presc.consultation.datetime).toLocaleDateString("fr-FR")
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                lineNumber: 416,
+                                columnNumber: 15
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                    children: "Médicaments:"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                    lineNumber: 417,
+                                    columnNumber: 18
+                                }, ("TURBOPACK compile-time value", void 0))
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                lineNumber: 417,
+                                columnNumber: 15
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("pre", {
+                                style: {
+                                    backgroundColor: "#f5f5f5",
+                                    padding: "8px",
+                                    borderRadius: "4px",
+                                    whiteSpace: "pre-wrap",
+                                    fontSize: "14px"
+                                },
+                                children: JSON.stringify(presc.medications, null, 2)
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                lineNumber: 418,
+                                columnNumber: 15
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                onClick: ()=>window.open(`/api/prescriptions/${presc.id}/pdf`, "_blank"),
+                                style: {
+                                    marginTop: "8px",
+                                    padding: "6px 12px",
+                                    backgroundColor: "#4caf50",
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: "4px",
+                                    cursor: "pointer"
+                                },
+                                children: "📄 Télécharger PDF"
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                lineNumber: 421,
+                                columnNumber: 15
+                            }, ("TURBOPACK compile-time value", void 0))
+                        ]
+                    }, presc.id, true, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 414,
+                        columnNumber: 13
+                    }, ("TURBOPACK compile-time value", void 0)))
+            }, void 0, false, {
+                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                lineNumber: 412,
+                columnNumber: 9
+            }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                children: "Aucune ordonnance trouvée."
+            }, void 0, false, {
+                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                lineNumber: 431,
+                columnNumber: 9
+            }, ("TURBOPACK compile-time value", void 0))
+        ]
+    }, void 0, true, {
+        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+        lineNumber: 351,
+        columnNumber: 5
+    }, ("TURBOPACK compile-time value", void 0));
+};
+_s2(OrdonnancesTab, "BJRiIzYfUchNO7BbguKEiriDMwo=");
+_c3 = OrdonnancesTab;
+const NouvelleConsultationTab = ({ patients, onConsultationCreated })=>{
+    _s3();
+    const [selectedPatientId, setSelectedPatientId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [datetime, setDatetime] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [diagnosis, setDiagnosis] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [notes, setNotes] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [message, setMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const handleSubmit = async (e)=>{
+        e.preventDefault();
+        if (!selectedPatientId || !datetime || !diagnosis) {
+            setMessage("Veuillez remplir tous les champs obligatoires.");
+            return;
+        }
+        try {
+            const res = await fetch("/api/consultations", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    patientId: selectedPatientId,
+                    datetime,
+                    diagnosis,
+                    notes: notes || undefined
+                })
+            });
+            if (res.ok) {
+                const newConsult = await res.json();
+                onConsultationCreated(newConsult);
+                setMessage("Consultation créée avec succès !");
+                setSelectedPatientId("");
+                setDatetime("");
+                setDiagnosis("");
+                setNotes("");
+            } else {
+                let errorMessage = "Erreur inconnue";
+                try {
+                    const errData = await res.json();
+                    errorMessage = errData.error || "Impossible de créer la consultation";
+                } catch (e) {
+                    errorMessage = `Erreur ${res.status}: ${res.statusText}`;
+                }
+                setMessage("Erreur: " + errorMessage);
+                console.error("Erreur API:", res.status, res.statusText);
+            }
+        } catch (err) {
+            console.error("Erreur réseau:", err);
+            setMessage("Erreur de connexion.");
+        }
+    };
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                children: "➕ Nouvelle Consultation"
+            }, void 0, false, {
+                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                lineNumber: 497,
+                columnNumber: 7
+            }, ("TURBOPACK compile-time value", void 0)),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
+                onSubmit: handleSubmit,
+                style: {
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "10px",
+                    maxWidth: "400px"
+                },
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                        children: [
+                            "Patient :",
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
+                                value: selectedPatientId,
+                                onChange: (e)=>setSelectedPatientId(e.target.value),
+                                required: true,
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                        value: "",
+                                        children: "-- Sélectionner --"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                        lineNumber: 502,
+                                        columnNumber: 13
+                                    }, ("TURBOPACK compile-time value", void 0)),
+                                    patients.map((p)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                            value: p.id,
+                                            children: [
+                                                p.firstName,
+                                                " ",
+                                                p.lastName
+                                            ]
+                                        }, p.id, true, {
+                                            fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                            lineNumber: 504,
+                                            columnNumber: 15
+                                        }, ("TURBOPACK compile-time value", void 0)))
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                lineNumber: 501,
+                                columnNumber: 11
+                            }, ("TURBOPACK compile-time value", void 0))
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 499,
+                        columnNumber: 9
+                    }, ("TURBOPACK compile-time value", void 0)),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                        children: [
+                            "Date et heure :",
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                type: "datetime-local",
+                                value: datetime,
+                                onChange: (e)=>setDatetime(e.target.value),
+                                required: true
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                lineNumber: 511,
+                                columnNumber: 11
+                            }, ("TURBOPACK compile-time value", void 0))
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 509,
+                        columnNumber: 9
+                    }, ("TURBOPACK compile-time value", void 0)),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                        children: [
+                            "Diagnostic :",
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
+                                value: diagnosis,
+                                onChange: (e)=>setDiagnosis(e.target.value),
+                                required: true,
+                                rows: 3,
+                                style: {
+                                    width: "100%",
+                                    padding: "6px",
+                                    marginTop: "4px"
+                                }
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                lineNumber: 516,
+                                columnNumber: 11
+                            }, ("TURBOPACK compile-time value", void 0))
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 514,
+                        columnNumber: 9
+                    }, ("TURBOPACK compile-time value", void 0)),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                        children: [
+                            "Notes (facultatif) :",
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
+                                value: notes,
+                                onChange: (e)=>setNotes(e.target.value),
+                                rows: 2,
+                                style: {
+                                    width: "100%",
+                                    padding: "6px",
+                                    marginTop: "4px"
+                                }
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                                lineNumber: 527,
+                                columnNumber: 11
+                            }, ("TURBOPACK compile-time value", void 0))
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 525,
+                        columnNumber: 9
+                    }, ("TURBOPACK compile-time value", void 0)),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                        type: "submit",
+                        style: {
+                            padding: "8px 16px",
+                            backgroundColor: "#0070f3",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "4px",
+                            cursor: "pointer"
+                        },
+                        children: "Créer"
+                    }, void 0, false, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 535,
+                        columnNumber: 9
+                    }, ("TURBOPACK compile-time value", void 0)),
+                    message && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                        style: {
+                            color: message.includes("Erreur") ? "red" : "green",
+                            margin: 0,
+                            fontWeight: "bold"
+                        },
+                        children: message
+                    }, void 0, false, {
+                        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                        lineNumber: 549,
+                        columnNumber: 11
+                    }, ("TURBOPACK compile-time value", void 0))
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/pages/doctor/dashboard.tsx",
+                lineNumber: 498,
+                columnNumber: 7
+            }, ("TURBOPACK compile-time value", void 0))
+        ]
+    }, void 0, true, {
+        fileName: "[project]/src/pages/doctor/dashboard.tsx",
+        lineNumber: 496,
+        columnNumber: 5
+    }, ("TURBOPACK compile-time value", void 0));
+};
+_s3(NouvelleConsultationTab, "7V3zBvbsvIrbodFB0IzkY97i4S8=");
+_c4 = NouvelleConsultationTab;
+const tabStyle = (isActive)=>({
+        padding: "8px 16px",
+        backgroundColor: isActive ? "#0070f3" : "#e0e0e0",
+        color: isActive ? "white" : "black",
+        border: "none",
+        borderRadius: "4px",
+        cursor: "pointer"
+    });
+var _c, _c1, _c2, _c3, _c4;
 __turbopack_context__.k.register(_c, "DoctorDashboard");
+__turbopack_context__.k.register(_c1, "AgendaTab");
+__turbopack_context__.k.register(_c2, "DossiersTab");
+__turbopack_context__.k.register(_c3, "OrdonnancesTab");
+__turbopack_context__.k.register(_c4, "NouvelleConsultationTab");
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }

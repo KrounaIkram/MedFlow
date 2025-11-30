@@ -17,7 +17,6 @@ type Doctor = {
   name: string;
 };
 
-// 🔹 Ajout minimal : types pour les nouvelles fonctionnalités
 type Invoice = {
   id: string;
   amount: number;
@@ -37,7 +36,6 @@ type Prescription = {
 export default function PatientPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
-  // 🔹 Ajout minimal : états pour factures et ordonnances
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,7 +60,6 @@ export default function PatientPage() {
       const docData = await docRes.json();
       setDoctors(docData);
 
-      // 🔹 Ajout minimal : charger factures et ordonnances
       const invoiceRes = await fetch("/api/invoices");
       if (invoiceRes.ok) {
         setInvoices(await invoiceRes.json());
@@ -164,7 +161,6 @@ export default function PatientPage() {
     setNotes(appointment.notes || "");
   };
 
-  // 🔹 Ajout minimal : fonctions pour paiement et PDF
   const handlePayInvoice = async (invoiceId: string) => {
     try {
       const res = await fetch("/api/stripe/checkout", {
@@ -215,7 +211,6 @@ export default function PatientPage() {
             )}
           </section>
 
-          {/* 🔹 Section Factures (ajoutée) */}
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Mes Factures</h2>
             {invoices.length === 0 ? (
@@ -243,7 +238,7 @@ export default function PatientPage() {
             )}
           </section>
 
-          {/* 🔹 Section Ordonnances (ajoutée) */}
+          {/* 🔹 Section Ordonnances (CORRIGÉE) */}
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Mes Ordonnances</h2>
             {prescriptions.length === 0 ? (
@@ -261,8 +256,9 @@ export default function PatientPage() {
                           : new Date(presc.createdAt).toLocaleDateString()}
                       </p>
                     </div>
+                    {/* ✅ CORRIGÉ : route = /api/prescriptions/:id/pdf */}
                     <button
-                      onClick={() => window.open(`/api/prescriptions/pdf/${presc.id}`, "_blank")}
+                      onClick={() => window.open(`/api/prescriptions/${presc.id}/pdf`, "_blank")}
                       className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-4 rounded"
                     >
                       PDF

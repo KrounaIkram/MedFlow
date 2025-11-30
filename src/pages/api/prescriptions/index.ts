@@ -9,16 +9,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const session = await requireRole(req, res, ["ADMIN", "DOCTOR", "RECEPTIONIST", "PATIENT"]);
     if (!session) return;
 
-    // GET list
+    // GET - Liste des ordonnances
     if (req.method === "GET") {
       const { patientId, doctorId, from, to } = req.query;
       const where: any = {};
 
-      // 🔒 Si c'est un PATIENT, il ne peut voir QUE ses ordonnances
       if (session.user.role === "PATIENT") {
-        where.patientId = session.user.id;
+        const patient = await prisma.patient.findFirst({
+          where: { ownerId: session.user.id },
+        });
+        if (!patient) return res.status(200).json([]);
+        where.patientId = patient.id;
       } else {
-        // ADMIN / DOCTOR / RECEPTIONIST : peuvent filtrer
         if (patientId) where.patientId = String(patientId);
         if (doctorId) where.doctorId = String(doctorId);
         if (from || to) where.createdAt = {};
@@ -26,37 +28,42 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (to) where.createdAt.lte = new Date(String(to));
       }
 
-      const list = await prisma.prescription.findMany({
+      const prescriptions = await prisma.prescription.findMany({
         where,
         include: { doctor: true, patient: true, consultation: true },
-        orderBy: { createdAt: "desc" }
+        orderBy: { createdAt: "desc" },
       });
 
-      return res.status(200).json(list);
+      return res.status(200).json(prescriptions);
     }
 
-    // POST create - réservé aux professionnels
+    // POST - Créer une ordonnance
     if (req.method === "POST") {
       if (session.user.role === "PATIENT") {
         return res.status(403).json({ error: "Non autorisé" });
       }
 
       const parse = prescriptionCreateSchema.safeParse(req.body);
-      if (!parse.success) return res.status(400).json({ error: parse.error.format() });
+      if (!parse.success) {
+        console.error("Validation error:", parse.error.flatten());
+        return res.status(400).json({ error: "Données invalides", details: parse.error.flatten() });
+      }
 
-      const data = parse.data;
-      const consult = await prisma.consultation.findUnique({ where: { id: data.consultationId } });
-      if (!consult) return res.status(404).json({ error: "Consultation not found" });
+      const { patientId, medications, notes, consultationId } = parse.data;
 
+      const patient = await prisma.patient.findUnique({ where: { id: patientId } });
+      if (!patient) return res.status(404).json({ error: "Patient non trouvé" });
+
+      const doctorId = session.user.id;
       const created = await prisma.prescription.create({
-        data: {
-          consultationId: data.consultationId,
-          doctorId: data.doctorId,
-          patientId: data.patientId,
-          medications: data.medications as any,
-          notes: data.notes ?? undefined
+         data:{
+          doctorId,
+          patientId,
+          medications: medications as any,
+          notes: notes ?? undefined,
+          consultationId: consultationId ?? undefined,
         },
-        include: { doctor: true, patient: true, consultation: true }
+        include: { doctor: true, patient: true, consultation: true },
       });
 
       return res.status(201).json(created);
@@ -66,6 +73,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).end();
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Erreur serveur" });
   }
 }

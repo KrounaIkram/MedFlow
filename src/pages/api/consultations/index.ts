@@ -6,82 +6,89 @@ import { requireRole } from "../../../server/rbac";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-   if (req.method === "GET") {
-  const session = await requireRole(req, res, ["ADMIN", "DOCTOR", "RECEPTIONIST", "PATIENT"]);
-  if (!session) return;
+    if (req.method === "GET") {
+      const session = await requireRole(req, res, ["ADMIN", "DOCTOR", "RECEPTIONIST", "PATIENT"]);
+      if (!session) return;
 
-  const { doctorId, patientId, from, to } = req.query;
+      const { doctorId, patientId, from, to } = req.query;
 
-  const where: any = {};
+      const where: any = {};
 
-  // 🔹 Si c'est un patient, il ne peut voir que ses propres consultations
-  if (session.user.role === "PATIENT") {
-    where.patientId = session.user.id; // ou ownerId selon ton schéma
-  } else {
-    if (doctorId) where.doctorId = String(doctorId);
-    if (patientId) where.patientId = String(patientId);
-  }
+      if (session.user.role === "PATIENT") {
+        const patientRecord = await prisma.patient.findFirst({
+          where: { ownerId: session.user.id },
+        });
+        if (!patientRecord) {
+          return res.status(404).json({ error: "Patient record not found" });
+        }
+        where.patientId = patientRecord.id;
+      } else {
+        if (doctorId) where.doctorId = String(doctorId);
+        if (patientId) where.patientId = String(patientId);
+      }
 
-  if (from || to) where.datetime = {};
-  if (from) where.datetime.gte = new Date(String(from));
-  if (to) where.datetime.lte = new Date(String(to));
+      if (from || to) where.datetime = {};
+      if (from) where.datetime.gte = new Date(String(from));
+      if (to) where.datetime.lte = new Date(String(to));
 
-  const consultations = await prisma.consultation.findMany({
-    where,
-    orderBy: { datetime: "desc" },
-    include: { doctor: true, patient: true, prescription: true },
-  });
+      const consultations = await prisma.consultation.findMany({
+        where,
+        orderBy: { datetime: "desc" },
+        include: { doctor: true, patient: { include: { owner: true } }, prescription: true },
+      });
 
-  return res.status(200).json(consultations);
-}
+      return res.status(200).json(consultations);
+    }
 
     if (req.method === "POST") {
       const session = await requireRole(req, res, ["ADMIN", "DOCTOR", "RECEPTIONIST"]);
       if (!session) return;
 
       const parse = consultationCreateSchema.safeParse(req.body);
-      if (!parse.success) return res.status(400).json({ error: parse.error.format() });
+      if (!parse.success) {
+        return res.status(400).json({ error: "Invalid input", details: parse.error.flatten() });
+      }
 
-      const data = parse.data;
+      const { patientId, datetime, duration, diagnosis, notes } = parse.data;
 
-      // Récupérer le docteur
-      const doctor = await prisma.user.findFirst({
-        where: { name: data.doctorName, role: "DOCTOR" },
+      const doctorId = session.user.id;
+
+      const doctor = await prisma.user.findUnique({
+        where: { id: doctorId, role: "DOCTOR" },
       });
-      if (!doctor) return res.status(404).json({ error: "Doctor not found" });
+      if (!doctor) {
+        return res.status(403).json({ error: "You must be a doctor to create a consultation" });
+      }
 
-      // Récupérer le patient user
-      const patientUser = await prisma.user.findFirst({
-        where: { name: data.patientName, role: "PATIENT" },
+      const patient = await prisma.patient.findUnique({
+        where: { id: patientId },
       });
-      if (!patientUser) return res.status(404).json({ error: "Patient user not found" });
+      if (!patient) {
+        return res.status(404).json({ error: "Patient not found" });
+      }
 
-      // Récupérer le patient réel lié au user
-      const patient = await prisma.patient.findFirst({
-        where: { ownerId: patientUser.id },
-      });
-      if (!patient) return res.status(404).json({ error: "Patient record not found" });
-
-      // Créer la consultation avec l'id correct du patient
       const created = await prisma.consultation.create({
-        data: {
-          doctorId: doctor.id,
-          patientId: patient.id, // <-- id correct de Patient
-          datetime: new Date(data.datetime),
-          duration: data.duration ?? undefined,
-          diagnosis: data.diagnosis ?? undefined,
-          notes: data.notes ?? undefined,
+        data: { // ✅ CORRIGÉ : "data" est requis
+          doctorId,
+          patientId,
+          datetime: new Date(datetime),
+          diagnosis,
+          notes,
+          duration,
         },
-        include: { doctor: true, patient: true },
+        include: {
+          doctor: { select: { id: true, name: true } },
+          patient: { include: { owner: { select: { name: true } } } },
+        },
       });
 
       return res.status(201).json(created);
     }
 
     res.setHeader("Allow", ["GET", "POST"]);
-    return res.status(405).end();
+    return res.status(405).end(`Method ${req.method} Not Allowed`);
   } catch (err) {
-    console.error(err);
+    console.error("API consultation error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
 }

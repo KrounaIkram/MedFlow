@@ -85,7 +85,7 @@ model Consultation {
 // ----- Ordonnance -----
 model Prescription {
   id             String       @id @default(cuid())
-  consultationId String       @unique
+  consultationId String      @unique
   consultation   Consultation @relation(fields: [consultationId], references: [id])
 
   doctorId  String

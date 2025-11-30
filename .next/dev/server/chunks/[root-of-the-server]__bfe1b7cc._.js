@@ -44,6 +44,7 @@ __turbopack_async_result__();
 
 return __turbopack_context__.a(async (__turbopack_handle_async_dependencies__, __turbopack_async_result__) => { try {
 
+// server/validators/consultation.ts
 __turbopack_context__.s([
     "consultationCreateSchema",
     ()=>consultationCreateSchema,
@@ -57,15 +58,14 @@ var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
 [__TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__] = __turbopack_async_dependencies__.then ? (await __turbopack_async_dependencies__)() : __turbopack_async_dependencies__;
 ;
 const consultationCreateSchema = __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].object({
-    doctorName: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().min(1, "Doctor name is required"),
-    patientName: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().min(1, "Patient name is required"),
-    datetime: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().min(1),
+    patientId: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().min(1, "Patient ID is required"),
+    datetime: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].coerce.date(),
     duration: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].number().int().positive().optional(),
-    diagnosis: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().optional(),
+    diagnosis: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().min(1, "Diagnosis is required").optional(),
     notes: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().optional()
 });
 const consultationUpdateSchema = __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].object({
-    datetime: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().optional(),
+    datetime: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().datetime().optional(),
     duration: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].number().int().positive().optional(),
     diagnosis: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().optional(),
     notes: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().optional()
@@ -146,9 +146,18 @@ async function handler(req, res) {
             if (!session) return;
             const { doctorId, patientId, from, to } = req.query;
             const where = {};
-            // 🔹 Si c'est un patient, il ne peut voir que ses propres consultations
             if (session.user.role === "PATIENT") {
-                where.patientId = session.user.id; // ou ownerId selon ton schéma
+                const patientRecord = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prisma"].patient.findFirst({
+                    where: {
+                        ownerId: session.user.id
+                    }
+                });
+                if (!patientRecord) {
+                    return res.status(404).json({
+                        error: "Patient record not found"
+                    });
+                }
+                where.patientId = patientRecord.id;
             } else {
                 if (doctorId) where.doctorId = String(doctorId);
                 if (patientId) where.patientId = String(patientId);
@@ -163,7 +172,11 @@ async function handler(req, res) {
                 },
                 include: {
                     doctor: true,
-                    patient: true,
+                    patient: {
+                        include: {
+                            owner: true
+                        }
+                    },
                     prescription: true
                 }
             });
@@ -177,52 +190,60 @@ async function handler(req, res) {
             ]);
             if (!session) return;
             const parse = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$server$2f$validators$2f$consultation$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["consultationCreateSchema"].safeParse(req.body);
-            if (!parse.success) return res.status(400).json({
-                error: parse.error.format()
-            });
-            const data = parse.data;
-            // Récupérer le docteur
-            const doctor = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prisma"].user.findFirst({
+            if (!parse.success) {
+                return res.status(400).json({
+                    error: "Invalid input",
+                    details: parse.error.flatten()
+                });
+            }
+            const { patientId, datetime, duration, diagnosis, notes } = parse.data;
+            const doctorId = session.user.id;
+            const doctor = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prisma"].user.findUnique({
                 where: {
-                    name: data.doctorName,
+                    id: doctorId,
                     role: "DOCTOR"
                 }
             });
-            if (!doctor) return res.status(404).json({
-                error: "Doctor not found"
-            });
-            // Récupérer le patient user
-            const patientUser = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prisma"].user.findFirst({
+            if (!doctor) {
+                return res.status(403).json({
+                    error: "You must be a doctor to create a consultation"
+                });
+            }
+            const patient = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prisma"].patient.findUnique({
                 where: {
-                    name: data.patientName,
-                    role: "PATIENT"
+                    id: patientId
                 }
             });
-            if (!patientUser) return res.status(404).json({
-                error: "Patient user not found"
-            });
-            // Récupérer le patient réel lié au user
-            const patient = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prisma"].patient.findFirst({
-                where: {
-                    ownerId: patientUser.id
-                }
-            });
-            if (!patient) return res.status(404).json({
-                error: "Patient record not found"
-            });
-            // Créer la consultation avec l'id correct du patient
+            if (!patient) {
+                return res.status(404).json({
+                    error: "Patient not found"
+                });
+            }
             const created = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prisma"].consultation.create({
                 data: {
-                    doctorId: doctor.id,
-                    patientId: patient.id,
-                    datetime: new Date(data.datetime),
-                    duration: data.duration ?? undefined,
-                    diagnosis: data.diagnosis ?? undefined,
-                    notes: data.notes ?? undefined
+                    doctorId,
+                    patientId,
+                    datetime: new Date(datetime),
+                    diagnosis,
+                    notes,
+                    duration
                 },
                 include: {
-                    doctor: true,
-                    patient: true
+                    doctor: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    },
+                    patient: {
+                        include: {
+                            owner: {
+                                select: {
+                                    name: true
+                                }
+                            }
+                        }
+                    }
                 }
             });
             return res.status(201).json(created);
@@ -231,9 +252,9 @@ async function handler(req, res) {
             "GET",
             "POST"
         ]);
-        return res.status(405).end();
+        return res.status(405).end(`Method ${req.method} Not Allowed`);
     } catch (err) {
-        console.error(err);
+        console.error("API consultation error:", err);
         return res.status(500).json({
             error: "Internal server error"
         });

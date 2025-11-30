@@ -1,0 +1,3 @@
+{
+  "/api/prescriptions/[id]/pdf": "pages/api/prescriptions/[id]/pdf.js"
+}

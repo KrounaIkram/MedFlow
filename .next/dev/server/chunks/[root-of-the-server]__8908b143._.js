@@ -86,6 +86,7 @@ __turbopack_async_result__();
 
 return __turbopack_context__.a(async (__turbopack_handle_async_dependencies__, __turbopack_async_result__) => { try {
 
+// server/validators/prescription.ts
 __turbopack_context__.s([
     "medicationSchema",
     ()=>medicationSchema,
@@ -101,17 +102,16 @@ var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
 [__TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__] = __turbopack_async_dependencies__.then ? (await __turbopack_async_dependencies__)() : __turbopack_async_dependencies__;
 ;
 const medicationSchema = __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].object({
-    name: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().min(1),
+    name: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().min(1, "Nom du médicament requis"),
     dosage: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().optional(),
     frequency: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().optional(),
     duration: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().optional(),
     notes: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().optional()
 });
 const prescriptionCreateSchema = __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].object({
-    consultationId: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().min(1),
-    doctorId: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().min(1),
-    patientId: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().min(1),
-    medications: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].array(medicationSchema).min(1),
+    consultationId: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().min(1, "Consultation requise"),
+    patientId: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().min(1, "Patient requis"),
+    medications: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].array(medicationSchema).min(1, "Au moins un médicament requis"),
     notes: __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].string().optional()
 });
 const prescriptionUpdateSchema = __TURBOPACK__imported__module__$5b$externals$5d2f$zod__$5b$external$5d$__$28$zod$2c$__esm_import$29$__["z"].object({
@@ -149,22 +149,26 @@ async function handler(req, res) {
             "PATIENT"
         ]);
         if (!session) return;
-        // GET list
+        // GET - Liste des ordonnances
         if (req.method === "GET") {
             const { patientId, doctorId, from, to } = req.query;
             const where = {};
-            // 🔒 Si c'est un PATIENT, il ne peut voir QUE ses ordonnances
             if (session.user.role === "PATIENT") {
-                where.patientId = session.user.id;
+                const patient = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prisma"].patient.findFirst({
+                    where: {
+                        ownerId: session.user.id
+                    }
+                });
+                if (!patient) return res.status(200).json([]);
+                where.patientId = patient.id;
             } else {
-                // ADMIN / DOCTOR / RECEPTIONIST : peuvent filtrer
                 if (patientId) where.patientId = String(patientId);
                 if (doctorId) where.doctorId = String(doctorId);
                 if (from || to) where.createdAt = {};
                 if (from) where.createdAt.gte = new Date(String(from));
                 if (to) where.createdAt.lte = new Date(String(to));
             }
-            const list = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prisma"].prescription.findMany({
+            const prescriptions = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prisma"].prescription.findMany({
                 where,
                 include: {
                     doctor: true,
@@ -175,9 +179,9 @@ async function handler(req, res) {
                     createdAt: "desc"
                 }
             });
-            return res.status(200).json(list);
+            return res.status(200).json(prescriptions);
         }
-        // POST create - réservé aux professionnels
+        // POST - Créer une ordonnance
         if (req.method === "POST") {
             if (session.user.role === "PATIENT") {
                 return res.status(403).json({
@@ -185,25 +189,30 @@ async function handler(req, res) {
                 });
             }
             const parse = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$server$2f$validators$2f$prescription$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prescriptionCreateSchema"].safeParse(req.body);
-            if (!parse.success) return res.status(400).json({
-                error: parse.error.format()
-            });
-            const data = parse.data;
-            const consult = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prisma"].consultation.findUnique({
+            if (!parse.success) {
+                console.error("Validation error:", parse.error.flatten());
+                return res.status(400).json({
+                    error: "Données invalides",
+                    details: parse.error.flatten()
+                });
+            }
+            const { patientId, medications, notes, consultationId } = parse.data;
+            const patient = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prisma"].patient.findUnique({
                 where: {
-                    id: data.consultationId
+                    id: patientId
                 }
             });
-            if (!consult) return res.status(404).json({
-                error: "Consultation not found"
+            if (!patient) return res.status(404).json({
+                error: "Patient non trouvé"
             });
+            const doctorId = session.user.id;
             const created = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$api$5d$__$28$ecmascript$29$__["prisma"].prescription.create({
                 data: {
-                    consultationId: data.consultationId,
-                    doctorId: data.doctorId,
-                    patientId: data.patientId,
-                    medications: data.medications,
-                    notes: data.notes ?? undefined
+                    doctorId,
+                    patientId,
+                    medications: medications,
+                    notes: notes ?? undefined,
+                    consultationId: consultationId ?? undefined
                 },
                 include: {
                     doctor: true,
@@ -221,7 +230,7 @@ async function handler(req, res) {
     } catch (err) {
         console.error(err);
         return res.status(500).json({
-            error: "Internal server error"
+            error: "Erreur serveur"
         });
     }
 }

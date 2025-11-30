@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 16, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ikram/Desktop/clinical/src/pages/_app.tsx"],"sourcesContent":["// pages/_app.tsx\r\n\r\nimport { SessionProvider } from \"next-auth/react\";\r\nimport type { AppProps } from \"next/app\";\r\nimport { Session } from \"next-auth\";\r\n\r\nexport default function App({\r\n  Component,\r\n  pageProps,\r\n}: AppProps<{ session: Session | null }>) {\r\n  return (\r\n    <SessionProvider session={pageProps.session}>\r\n      <Component {...pageProps} />\r\n    </SessionProvider>\r\n  );\r\n}"],"names":[],"mappings":"AAAA,iBAAiB;;;;;;AAEjB;;;AAIe,SAAS,IAAI,EAC1B,SAAS,EACT,SAAS,EAC6B;IACtC,qBACE,qKAAC,sJAAe;QAAC,SAAS,UAAU,OAAO;kBACzC,cAAA,qKAAC;YAAW,GAAG,SAAS;;;;;;;;;;;AAG9B"}}]
+}

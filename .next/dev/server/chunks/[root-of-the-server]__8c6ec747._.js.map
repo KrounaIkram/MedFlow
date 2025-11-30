@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 28, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ikram/Desktop/clinical/src/pages/api/auth/%5B...nextauth%5D.ts"],"sourcesContent":["// pages/api/auth/[...nextauth].ts\r\nimport NextAuth from \"next-auth\";\r\nimport CredentialsProvider from \"next-auth/providers/credentials\";\r\n\r\nexport default NextAuth({\r\n  providers: [\r\n    CredentialsProvider({\r\n      name: \"Credentials\",\r\n      credentials: { email: {}, password: {} },\r\n      async authorize() {\r\n        return { id: \"1\", name: \"Admin\", email: \"admin@test.com\", role: \"ADMIN\" };\r\n      },\r\n    }),\r\n  ],\r\n  secret: process.env.NEXTAUTH_SECRET,\r\n  session: { strategy: \"jwt\" },\r\n});\r\n"],"names":[],"mappings":"AAAA,kCAAkC;;;;;AAClC;AACA;;;uCAEe,IAAA,4HAAQ,EAAC;IACtB,WAAW;QACT,IAAA,oLAAmB,EAAC;YAClB,MAAM;YACN,aAAa;gBAAE,OAAO,CAAC;gBAAG,UAAU,CAAC;YAAE;YACvC,MAAM;gBACJ,OAAO;oBAAE,IAAI;oBAAK,MAAM;oBAAS,OAAO;oBAAkB,MAAM;gBAAQ;YAC1E;QACF;KACD;IACD,QAAQ,QAAQ,GAAG,CAAC,eAAe;IACnC,SAAS;QAAE,UAAU;IAAM;AAC7B"}}]
+}

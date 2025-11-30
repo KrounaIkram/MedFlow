@@ -1,3 +1,4 @@
+// pages/api/prescriptions/index.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../lib/prisma";
 import { requireRole } from "../../../server/rbac";
@@ -5,18 +6,25 @@ import { prescriptionCreateSchema } from "../../../server/validators/prescriptio
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    // GET list - ADMIN, DOCTOR (list all), RECEPTIONIST (list), PATIENT (only own via query)
-    if (req.method === "GET") {
-      const session = await requireRole(req, res, ["ADMIN", "DOCTOR", "RECEPTIONIST"]);
-      if (!session) return;
+    const session = await requireRole(req, res, ["ADMIN", "DOCTOR", "RECEPTIONIST", "PATIENT"]);
+    if (!session) return;
 
+    // GET list
+    if (req.method === "GET") {
       const { patientId, doctorId, from, to } = req.query;
       const where: any = {};
-      if (patientId) where.patientId = String(patientId);
-      if (doctorId) where.doctorId = String(doctorId);
-      if (from || to) where.createdAt = {};
-      if (from) where.createdAt.gte = new Date(String(from));
-      if (to) where.createdAt.lte = new Date(String(to));
+
+      // 🔒 Si c'est un PATIENT, il ne peut voir QUE ses ordonnances
+      if (session.user.role === "PATIENT") {
+        where.patientId = session.user.id;
+      } else {
+        // ADMIN / DOCTOR / RECEPTIONIST : peuvent filtrer
+        if (patientId) where.patientId = String(patientId);
+        if (doctorId) where.doctorId = String(doctorId);
+        if (from || to) where.createdAt = {};
+        if (from) where.createdAt.gte = new Date(String(from));
+        if (to) where.createdAt.lte = new Date(String(to));
+      }
 
       const list = await prisma.prescription.findMany({
         where,
@@ -27,17 +35,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(200).json(list);
     }
 
-    // POST create - ADMIN, DOCTOR, RECEPTIONIST
+    // POST create - réservé aux professionnels
     if (req.method === "POST") {
-      const session = await requireRole(req, res, ["ADMIN", "DOCTOR", "RECEPTIONIST"]);
-      if (!session) return;
+      if (session.user.role === "PATIENT") {
+        return res.status(403).json({ error: "Non autorisé" });
+      }
 
       const parse = prescriptionCreateSchema.safeParse(req.body);
       if (!parse.success) return res.status(400).json({ error: parse.error.format() });
 
       const data = parse.data;
-
-      // Ensure consultation exists
       const consult = await prisma.consultation.findUnique({ where: { id: data.consultationId } });
       if (!consult) return res.status(404).json({ error: "Consultation not found" });
 

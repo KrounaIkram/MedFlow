@@ -11,6 +11,20 @@ const schema = z.object({
 });
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+
+  // ------------------------
+  // 🎯 FIX CORS ICI
+  // ------------------------
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  // Répond au préflight OPTIONS
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+  // ------------------------
+
   if (req.method !== "POST")
     return res.status(405).json({ error: "Method not allowed" });
 
@@ -34,18 +48,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   });
 
-let patient = null;
-if ((role ?? "PATIENT") === "PATIENT") {
-  patient = await prisma.patient.create({
-    data: {
-      firstName: name.split(" ")[0] || name,
-      lastName: name.split(" ")[1] || "",
-      email,
-      owner: { connect: { id: user.id } } // lie le Patient au User
-    }
-  });
-}
+  let patient = null;
+  if ((role ?? "PATIENT") === "PATIENT") {
+    patient = await prisma.patient.create({
+      data: {
+        firstName: name.split(" ")[0] || name,
+        lastName: name.split(" ")[1] || "",
+        email,
+        owner: { connect: { id: user.id } }
+      }
+    });
+  }
 
-// Retourne l'utilisateur et le patient (s’il existe)
-return res.status(201).json({ message: "User created", user, patient });
+  return res.status(201).json({ message: "User created", user, patient });
 }

@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 16, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/middleware.ts"],"sourcesContent":["import { withAuth } from \"next-auth/middleware\";\r\n\r\nexport default withAuth(\r\n  function middleware(req) {},\r\n  {\r\n    callbacks: {\r\n      authorized: ({ token, req }) => {\r\n        const path = req.nextUrl.pathname;\r\n\r\n        if (path.startsWith(\"/patient\") && token?.role !== \"PATIENT\") return false;\r\n        if (path.startsWith(\"/doctor\")  && token?.role !== \"DOCTOR\") return false;\r\n        if (path.startsWith(\"/admin\")   && token?.role !== \"ADMIN\") return false;\r\n\r\n        return true;\r\n      },\r\n    },\r\n  }\r\n);\r\n\r\nexport const config = {\r\n  matcher: [\r\n    \"/patient/:path*\",\r\n    \"/doctor/:path*\",\r\n    \"/admin/:path*\",\r\n  ],\r\n};\r\n"],"names":[],"mappings":";;;;;;AAAA;;uCAEe,IAAA,8JAAQ,EACrB,SAAS,WAAW,GAAG,GAAG,GAC1B;IACE,WAAW;QACT,YAAY,CAAC,EAAE,KAAK,EAAE,GAAG,EAAE;YACzB,MAAM,OAAO,IAAI,OAAO,CAAC,QAAQ;YAEjC,IAAI,KAAK,UAAU,CAAC,eAAe,OAAO,SAAS,WAAW,OAAO;YACrE,IAAI,KAAK,UAAU,CAAC,cAAe,OAAO,SAAS,UAAU,OAAO;YACpE,IAAI,KAAK,UAAU,CAAC,aAAe,OAAO,SAAS,SAAS,OAAO;YAEnE,OAAO;QACT;IACF;AACF;AAGK,MAAM,SAAS;IACpB,SAAS;QACP;QACA;QACA;KACD;AACH"}}]
+}

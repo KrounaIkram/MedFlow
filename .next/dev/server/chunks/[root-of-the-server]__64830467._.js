@@ -57,6 +57,8 @@ __turbopack_async_result__();
 return __turbopack_context__.a(async (__turbopack_handle_async_dependencies__, __turbopack_async_result__) => { try {
 
 __turbopack_context__.s([
+    "authOptions",
+    ()=>authOptions,
     "default",
     ()=>__TURBOPACK__default__export__
 ]);
@@ -72,7 +74,12 @@ var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
 ;
 ;
 ;
-const __TURBOPACK__default__export__ = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$next$2d$auth__$5b$external$5d$__$28$next$2d$auth$2c$__cjs$29$__["default"])({
+// ✅ Assurer que NEXTAUTH_SECRET existe
+const secret = process.env.NEXTAUTH_SECRET;
+if (!secret) {
+    throw new Error("Environment variable NEXTAUTH_SECRET is not set!");
+}
+const authOptions = {
     providers: [
         (0, __TURBOPACK__imported__module__$5b$externals$5d2f$next$2d$auth$2f$providers$2f$credentials__$5b$external$5d$__$28$next$2d$auth$2f$providers$2f$credentials$2c$__cjs$29$__["default"])({
             name: "Credentials",
@@ -87,10 +94,9 @@ const __TURBOPACK__default__export__ = (0, __TURBOPACK__imported__module__$5b$ex
                         email: credentials.email
                     }
                 });
-                if (!user) return null;
+                if (!user || !user.password) return null;
                 const isValid = await (0, __TURBOPACK__imported__module__$5b$externals$5d2f$bcryptjs__$5b$external$5d$__$28$bcryptjs$2c$__esm_import$29$__["compare"])(credentials.password, user.password);
                 if (!isValid) return null;
-                // 🔥 Retourner le rôle réel depuis la DB
                 return {
                     id: user.id,
                     name: user.name,
@@ -100,25 +106,27 @@ const __TURBOPACK__default__export__ = (0, __TURBOPACK__imported__module__$5b$ex
             }
         })
     ],
-    secret: process.env.NEXTAUTH_SECRET,
+    secret,
     session: {
         strategy: "jwt"
     },
     callbacks: {
         async jwt ({ token, user }) {
-            if (user) {
-                token.role = user.role; // stocker le rôle
-            }
+            if (user) token.role = user.role;
             return token;
         },
         async session ({ session, token }) {
             if (session.user) {
-                session.user.role = token.role; // ajouter le rôle dans la session
+                session.user.role = token.role;
             }
             return session;
         }
+    },
+    pages: {
+        signIn: "/login"
     }
-});
+};
+const __TURBOPACK__default__export__ = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$next$2d$auth__$5b$external$5d$__$28$next$2d$auth$2c$__cjs$29$__["default"])(authOptions);
 __turbopack_async_result__();
 } catch(e) { __turbopack_async_result__(e); } }, false);}),
 ];

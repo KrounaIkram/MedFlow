@@ -1,21 +1,6 @@
 self.__BUILD_MANIFEST = {
-  "/_error": [
-    "static/chunks/pages/_error.js"
-  ],
-  "/doctor/dashboard": [
-    "static/chunks/pages/doctor/dashboard.js"
-  ],
-  "/login": [
-    "static/chunks/pages/login.js"
-  ],
-  "/patient": [
-    "static/chunks/pages/patient.js"
-  ],
   "/receptionist/dashboard": [
     "static/chunks/pages/receptionist/dashboard.js"
-  ],
-  "/register": [
-    "static/chunks/pages/register.js"
   ],
   "__rewrites": {
     "afterFiles": [],
@@ -35,6 +20,7 @@ self.__BUILD_MANIFEST = {
     "/api/invoices",
     "/api/invoices/[id]",
     "/api/patients",
+    "/api/patients/me/invoices",
     "/api/patients/[id]",
     "/api/payments/checkout",
     "/api/payments/history",
@@ -48,6 +34,7 @@ self.__BUILD_MANIFEST = {
     "/doctor/dashboard",
     "/login",
     "/patient",
+    "/payment-success",
     "/receptionist/dashboard",
     "/register"
   ]

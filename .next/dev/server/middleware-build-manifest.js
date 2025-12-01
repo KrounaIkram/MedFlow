@@ -11,74 +11,16 @@ globalThis.__BUILD_MANIFEST = {
       "static/chunks/src_pages__app_2da965e7._.js",
       "static/chunks/turbopack-src_pages__app_adea782a._.js"
     ],
-    "/_error": [
-      "static/chunks/node_modules_next_dist_compiled_8ca6b690._.js",
-      "static/chunks/node_modules_next_dist_shared_lib_cf5b50a6._.js",
-      "static/chunks/node_modules_next_dist_client_d0aa886c._.js",
-      "static/chunks/node_modules_next_dist_19fd0646._.js",
-      "static/chunks/node_modules_next_error_1cfbb379.js",
-      "static/chunks/[next]_entry_page-loader_ts_43b523b5._.js",
-      "static/chunks/node_modules_react-dom_4411d9bd._.js",
-      "static/chunks/node_modules_7f09fef0._.js",
-      "static/chunks/[root-of-the-server]__a2d5dfc8._.js",
-      "static/chunks/src_pages__error_2da965e7._.js",
-      "static/chunks/turbopack-src_pages__error_fc124685._.js"
-    ],
-    "/doctor/dashboard": [
-      "static/chunks/node_modules_next_dist_compiled_8ca6b690._.js",
-      "static/chunks/node_modules_next_dist_shared_lib_82dc2e9d._.js",
-      "static/chunks/node_modules_next_dist_client_d0aa886c._.js",
-      "static/chunks/node_modules_next_dist_6024eba3._.js",
-      "static/chunks/node_modules_react-dom_4411d9bd._.js",
-      "static/chunks/node_modules_6bf7e186._.js",
-      "static/chunks/[root-of-the-server]__623fcc7e._.js",
-      "static/chunks/src_pages_doctor_dashboard_tsx_2da965e7._.js",
-      "static/chunks/turbopack-src_pages_doctor_dashboard_tsx_88f14deb._.js"
-    ],
-    "/login": [
-      "static/chunks/node_modules_next_dist_compiled_8ca6b690._.js",
-      "static/chunks/node_modules_next_dist_shared_lib_82dc2e9d._.js",
-      "static/chunks/node_modules_next_dist_client_d0aa886c._.js",
-      "static/chunks/node_modules_next_dist_6024eba3._.js",
-      "static/chunks/node_modules_react-dom_4411d9bd._.js",
-      "static/chunks/node_modules_e4de94c2._.js",
-      "static/chunks/[root-of-the-server]__45a12279._.js",
-      "static/chunks/src_pages_login_2da965e7._.js",
-      "static/chunks/turbopack-src_pages_login_697c9c31._.js"
-    ],
-    "/patient": [
-      "static/chunks/node_modules_next_dist_compiled_8ca6b690._.js",
-      "static/chunks/node_modules_next_dist_shared_lib_82dc2e9d._.js",
-      "static/chunks/node_modules_next_dist_client_d0aa886c._.js",
-      "static/chunks/node_modules_next_dist_6024eba3._.js",
-      "static/chunks/node_modules_react-dom_4411d9bd._.js",
-      "static/chunks/node_modules_83fce58a._.js",
-      "static/chunks/[root-of-the-server]__3648b632._.js",
-      "static/chunks/src_pages_patient_2da965e7._.js",
-      "static/chunks/turbopack-src_pages_patient_f2752ebe._.js"
-    ],
     "/receptionist/dashboard": [
-      "static/chunks/node_modules_next_dist_compiled_8ca6b690._.js",
+      "static/chunks/node_modules_next_dist_compiled_48866e82._.js",
       "static/chunks/node_modules_next_dist_shared_lib_82dc2e9d._.js",
       "static/chunks/node_modules_next_dist_client_d0aa886c._.js",
       "static/chunks/node_modules_next_dist_6024eba3._.js",
       "static/chunks/node_modules_react-dom_4411d9bd._.js",
-      "static/chunks/node_modules_83fce58a._.js",
+      "static/chunks/node_modules_bc22174f._.js",
       "static/chunks/[root-of-the-server]__cf41b313._.js",
       "static/chunks/src_pages_receptionist_dashboard_tsx_2da965e7._.js",
-      "static/chunks/turbopack-src_pages_receptionist_dashboard_tsx_fd84b3ec._.js"
-    ],
-    "/register": [
-      "static/chunks/node_modules_next_dist_compiled_8ca6b690._.js",
-      "static/chunks/node_modules_next_dist_shared_lib_79b1c0a1._.js",
-      "static/chunks/node_modules_next_dist_client_f4b58c85._.js",
-      "static/chunks/node_modules_next_dist_ec0ff3d3._.js",
-      "static/chunks/node_modules_next_navigation_278dac8a.js",
-      "static/chunks/node_modules_react-dom_4411d9bd._.js",
-      "static/chunks/node_modules_83fce58a._.js",
-      "static/chunks/[root-of-the-server]__4abd6708._.js",
-      "static/chunks/src_pages_register_2da965e7._.js",
-      "static/chunks/turbopack-src_pages_register_4bc6152d._.js"
+      "static/chunks/turbopack-src_pages_receptionist_dashboard_tsx_fd1fc689._.js"
     ]
   },
   "devFiles": [],

@@ -19,9 +19,9 @@ type Doctor = {
 
 type Invoice = {
   id: string;
-  amount: number;
+  amount: number; // en centimes
   currency: string;
-  paid: boolean;
+  status: "PENDING" | "PAID" | "CANCELED";
   createdAt: string;
 };
 
@@ -60,7 +60,8 @@ export default function PatientPage() {
       const docData = await docRes.json();
       setDoctors(docData);
 
-      const invoiceRes = await fetch("/api/invoices");
+      // ✅ Bon endpoint : factures du patient
+      const invoiceRes = await fetch("/api/patients/me/invoices");
       if (invoiceRes.ok) {
         setInvoices(await invoiceRes.json());
       }
@@ -112,7 +113,7 @@ export default function PatientPage() {
 
         if (!res.ok) {
           const errorData = await res.json();
-          throw new Error(errorData.error?.appointmentId?._errors?.[0] || JSON.stringify(errorData));
+          throw new Error(errorData.error?.message || "Erreur lors de la modification");
         }
 
         toast.success("Rendez-vous modifié avec succès !");
@@ -132,7 +133,7 @@ export default function PatientPage() {
 
         if (!res.ok) {
           const errorData = await res.json();
-          throw new Error(errorData.error?.message || JSON.stringify(errorData));
+          throw new Error(errorData.error?.message || "Erreur lors de la création");
         }
 
         toast.success("Rendez-vous créé avec succès !");
@@ -161,18 +162,29 @@ export default function PatientPage() {
     setNotes(appointment.notes || "");
   };
 
+  // ✅ Paiement : appelle /api/invoices/pay
   const handlePayInvoice = async (invoiceId: string) => {
     try {
-      const res = await fetch("/api/stripe/checkout", {
+      const res = await fetch("/api/payments/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ invoiceId }),
+        credentials: "include",
       });
-      if (!res.ok) throw new Error("Erreur lors du lancement du paiement");
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || "Impossible de lancer le paiement");
+      }
+
       const { url } = await res.json();
-      if (url) window.location.href = url;
+      if (url) {
+        window.location.href = url;
+      } else {
+        throw new Error("URL de redirection manquante");
+      }
     } catch (err: any) {
-      toast.error(err.message || "Impossible de lancer le paiement");
+      toast.error(err.message || "Erreur lors du lancement du paiement");
     }
   };
 
@@ -181,9 +193,10 @@ export default function PatientPage() {
       <h1 className="text-3xl font-bold mb-6 text-center">Interface Patient</h1>
 
       {loading ? (
-        <p>Chargement...</p>
+        <p className="text-center">Chargement...</p>
       ) : (
         <>
+          {/* Rendez-vous */}
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Mes Rendez-vous</h2>
             {appointments.length === 0 ? (
@@ -191,7 +204,7 @@ export default function PatientPage() {
             ) : (
               <ul className="space-y-3">
                 {appointments.map((a) => (
-                  <li key={a.id} className="p-4 border rounded-lg shadow-sm flex justify-between items-center">
+                  <li key={a.id} className="p-4 border rounded-lg shadow-sm flex justify-between items-start">
                     <div>
                       <p><strong>Date :</strong> {new Date(a.date).toLocaleString()}</p>
                       <p><strong>Type :</strong> {a.type}</p>
@@ -201,7 +214,7 @@ export default function PatientPage() {
                     </div>
                     <button
                       onClick={() => handleEdit(a)}
-                      className="bg-yellow-500 hover:bg-yellow-700 text-white py-1 px-3 rounded"
+                      className="bg-yellow-500 hover:bg-yellow-700 text-white py-1 px-3 rounded mt-2"
                     >
                       Modifier
                     </button>
@@ -211,6 +224,7 @@ export default function PatientPage() {
             )}
           </section>
 
+          {/* Factures */}
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Mes Factures</h2>
             {invoices.length === 0 ? (
@@ -222,9 +236,12 @@ export default function PatientPage() {
                     <div>
                       <p><strong>Facture #{invoice.id}</strong></p>
                       <p>Montant : {(invoice.amount / 100).toFixed(2)} {invoice.currency.toUpperCase()}</p>
-                      <p>Status : {invoice.paid ? "✅ Payée" : "⏳ Impayée"}</p>
+                      <p>Status : 
+                        {invoice.status === "PAID" ? "✅ Payée" : 
+                         invoice.status === "CANCELED" ? "❌ Annulée" : "⏳ En attente"}
+                      </p>
                     </div>
-                    {!invoice.paid && (
+                    {invoice.status === "PENDING" && (
                       <button
                         onClick={() => handlePayInvoice(invoice.id)}
                         className="bg-green-600 hover:bg-green-700 text-white py-1 px-4 rounded"
@@ -238,7 +255,7 @@ export default function PatientPage() {
             )}
           </section>
 
-          {/* 🔹 Section Ordonnances (CORRIGÉE) */}
+          {/* Ordonnances */}
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Mes Ordonnances</h2>
             {prescriptions.length === 0 ? (
@@ -256,7 +273,6 @@ export default function PatientPage() {
                           : new Date(presc.createdAt).toLocaleDateString()}
                       </p>
                     </div>
-                    {/* ✅ CORRIGÉ : route = /api/prescriptions/:id/pdf */}
                     <button
                       onClick={() => window.open(`/api/prescriptions/${presc.id}/pdf`, "_blank")}
                       className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-4 rounded"
@@ -269,6 +285,7 @@ export default function PatientPage() {
             )}
           </section>
 
+          {/* Formulaire de RDV */}
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">
               {editingId ? "Modifier le Rendez-vous" : "Créer un Rendez-vous"}

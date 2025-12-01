@@ -501,7 +501,8 @@ function PatientPage() {
             if (!docRes.ok) throw new Error("Erreur chargement docteurs");
             const docData = await docRes.json();
             setDoctors(docData);
-            const invoiceRes = await fetch("/api/invoices");
+            // ✅ Bon endpoint : factures du patient
+            const invoiceRes = await fetch("/api/patients/me/invoices");
             if (invoiceRes.ok) {
                 setInvoices(await invoiceRes.json());
             }
@@ -548,7 +549,7 @@ function PatientPage() {
                 });
                 if (!res.ok) {
                     const errorData = await res.json();
-                    throw new Error(errorData.error?.appointmentId?._errors?.[0] || JSON.stringify(errorData));
+                    throw new Error(errorData.error?.message || "Erreur lors de la modification");
                 }
                 __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$client$5d$__$28$ecmascript$29$__["toast"].success("Rendez-vous modifié avec succès !");
             } else {
@@ -567,7 +568,7 @@ function PatientPage() {
                 });
                 if (!res.ok) {
                     const errorData = await res.json();
-                    throw new Error(errorData.error?.message || JSON.stringify(errorData));
+                    throw new Error(errorData.error?.message || "Erreur lors de la création");
                 }
                 __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$client$5d$__$28$ecmascript$29$__["toast"].success("Rendez-vous créé avec succès !");
             }
@@ -591,22 +592,31 @@ function PatientPage() {
         setSelectedType(appointment.type);
         setNotes(appointment.notes || "");
     };
+    // ✅ Paiement : appelle /api/invoices/pay
     const handlePayInvoice = async (invoiceId)=>{
         try {
-            const res = await fetch("/api/stripe/checkout", {
+            const res = await fetch("/api/payments/checkout", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     invoiceId
-                })
+                }),
+                credentials: "include"
             });
-            if (!res.ok) throw new Error("Erreur lors du lancement du paiement");
+            if (!res.ok) {
+                const errorData = await res.json().catch(()=>({}));
+                throw new Error(errorData.error || "Impossible de lancer le paiement");
+            }
             const { url } = await res.json();
-            if (url) window.location.href = url;
+            if (url) {
+                window.location.href = url;
+            } else {
+                throw new Error("URL de redirection manquante");
+            }
         } catch (err) {
-            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$client$5d$__$28$ecmascript$29$__["toast"].error(err.message || "Impossible de lancer le paiement");
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$client$5d$__$28$ecmascript$29$__["toast"].error(err.message || "Erreur lors du lancement du paiement");
         }
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -617,14 +627,15 @@ function PatientPage() {
                 children: "Interface Patient"
             }, void 0, false, {
                 fileName: "[project]/src/pages/patient.tsx",
-                lineNumber: 181,
+                lineNumber: 193,
                 columnNumber: 7
             }, this),
             loading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                className: "text-center",
                 children: "Chargement..."
             }, void 0, false, {
                 fileName: "[project]/src/pages/patient.tsx",
-                lineNumber: 184,
+                lineNumber: 196,
                 columnNumber: 9
             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["Fragment"], {
                 children: [
@@ -636,19 +647,19 @@ function PatientPage() {
                                 children: "Mes Rendez-vous"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/patient.tsx",
-                                lineNumber: 188,
+                                lineNumber: 201,
                                 columnNumber: 13
                             }, this),
                             appointments.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 children: "Aucun rendez-vous trouvé."
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/patient.tsx",
-                                lineNumber: 190,
+                                lineNumber: 203,
                                 columnNumber: 15
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
                                 className: "space-y-3",
                                 children: appointments.map((a)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                        className: "p-4 border rounded-lg shadow-sm flex justify-between items-center",
+                                        className: "p-4 border rounded-lg shadow-sm flex justify-between items-start",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 children: [
@@ -658,7 +669,7 @@ function PatientPage() {
                                                                 children: "Date :"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                                lineNumber: 196,
+                                                                lineNumber: 209,
                                                                 columnNumber: 26
                                                             }, this),
                                                             " ",
@@ -666,7 +677,7 @@ function PatientPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/pages/patient.tsx",
-                                                        lineNumber: 196,
+                                                        lineNumber: 209,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -675,7 +686,7 @@ function PatientPage() {
                                                                 children: "Type :"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                                lineNumber: 197,
+                                                                lineNumber: 210,
                                                                 columnNumber: 26
                                                             }, this),
                                                             " ",
@@ -683,7 +694,7 @@ function PatientPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/pages/patient.tsx",
-                                                        lineNumber: 197,
+                                                        lineNumber: 210,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -692,7 +703,7 @@ function PatientPage() {
                                                                 children: "Docteur :"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                                lineNumber: 198,
+                                                                lineNumber: 211,
                                                                 columnNumber: 26
                                                             }, this),
                                                             " ",
@@ -700,7 +711,7 @@ function PatientPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/pages/patient.tsx",
-                                                        lineNumber: 198,
+                                                        lineNumber: 211,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -709,7 +720,7 @@ function PatientPage() {
                                                                 children: "Status :"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                                lineNumber: 199,
+                                                                lineNumber: 212,
                                                                 columnNumber: 26
                                                             }, this),
                                                             " ",
@@ -717,7 +728,7 @@ function PatientPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/pages/patient.tsx",
-                                                        lineNumber: 199,
+                                                        lineNumber: 212,
                                                         columnNumber: 23
                                                     }, this),
                                                     a.notes && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -726,7 +737,7 @@ function PatientPage() {
                                                                 children: "Notes :"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                                lineNumber: 200,
+                                                                lineNumber: 213,
                                                                 columnNumber: 38
                                                             }, this),
                                                             " ",
@@ -734,39 +745,39 @@ function PatientPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/pages/patient.tsx",
-                                                        lineNumber: 200,
+                                                        lineNumber: 213,
                                                         columnNumber: 35
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                lineNumber: 195,
+                                                lineNumber: 208,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                 onClick: ()=>handleEdit(a),
-                                                className: "bg-yellow-500 hover:bg-yellow-700 text-white py-1 px-3 rounded",
+                                                className: "bg-yellow-500 hover:bg-yellow-700 text-white py-1 px-3 rounded mt-2",
                                                 children: "Modifier"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                lineNumber: 202,
+                                                lineNumber: 215,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, a.id, true, {
                                         fileName: "[project]/src/pages/patient.tsx",
-                                        lineNumber: 194,
+                                        lineNumber: 207,
                                         columnNumber: 19
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/patient.tsx",
-                                lineNumber: 192,
+                                lineNumber: 205,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/pages/patient.tsx",
-                        lineNumber: 187,
+                        lineNumber: 200,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -777,14 +788,14 @@ function PatientPage() {
                                 children: "Mes Factures"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/patient.tsx",
-                                lineNumber: 215,
+                                lineNumber: 229,
                                 columnNumber: 13
                             }, this),
                             invoices.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 children: "Aucune facture trouvée."
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/patient.tsx",
-                                lineNumber: 217,
+                                lineNumber: 231,
                                 columnNumber: 15
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
                                 className: "space-y-3",
@@ -801,12 +812,12 @@ function PatientPage() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/pages/patient.tsx",
-                                                            lineNumber: 223,
+                                                            lineNumber: 237,
                                                             columnNumber: 26
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/pages/patient.tsx",
-                                                        lineNumber: 223,
+                                                        lineNumber: 237,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -818,49 +829,49 @@ function PatientPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/pages/patient.tsx",
-                                                        lineNumber: 224,
+                                                        lineNumber: 238,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                         children: [
-                                                            "Status : ",
-                                                            invoice.paid ? "✅ Payée" : "⏳ Impayée"
+                                                            "Status :",
+                                                            invoice.status === "PAID" ? "✅ Payée" : invoice.status === "CANCELED" ? "❌ Annulée" : "⏳ En attente"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/pages/patient.tsx",
-                                                        lineNumber: 225,
+                                                        lineNumber: 239,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                lineNumber: 222,
+                                                lineNumber: 236,
                                                 columnNumber: 21
                                             }, this),
-                                            !invoice.paid && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                            invoice.status === "PENDING" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                 onClick: ()=>handlePayInvoice(invoice.id),
                                                 className: "bg-green-600 hover:bg-green-700 text-white py-1 px-4 rounded",
                                                 children: "Payer"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                lineNumber: 228,
+                                                lineNumber: 245,
                                                 columnNumber: 23
                                             }, this)
                                         ]
                                     }, invoice.id, true, {
                                         fileName: "[project]/src/pages/patient.tsx",
-                                        lineNumber: 221,
+                                        lineNumber: 235,
                                         columnNumber: 19
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/patient.tsx",
-                                lineNumber: 219,
+                                lineNumber: 233,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/pages/patient.tsx",
-                        lineNumber: 214,
+                        lineNumber: 228,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -871,14 +882,14 @@ function PatientPage() {
                                 children: "Mes Ordonnances"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/patient.tsx",
-                                lineNumber: 243,
+                                lineNumber: 260,
                                 columnNumber: 13
                             }, this),
                             prescriptions.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 children: "Aucune ordonnance disponible."
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/patient.tsx",
-                                lineNumber: 245,
+                                lineNumber: 262,
                                 columnNumber: 15
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
                                 className: "space-y-3",
@@ -895,12 +906,12 @@ function PatientPage() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/pages/patient.tsx",
-                                                            lineNumber: 251,
+                                                            lineNumber: 268,
                                                             columnNumber: 26
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/pages/patient.tsx",
-                                                        lineNumber: 251,
+                                                        lineNumber: 268,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -910,7 +921,7 @@ function PatientPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/pages/patient.tsx",
-                                                        lineNumber: 252,
+                                                        lineNumber: 269,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -920,13 +931,13 @@ function PatientPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/pages/patient.tsx",
-                                                        lineNumber: 253,
+                                                        lineNumber: 270,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                lineNumber: 250,
+                                                lineNumber: 267,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -935,24 +946,24 @@ function PatientPage() {
                                                 children: "PDF"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                lineNumber: 260,
+                                                lineNumber: 276,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, presc.id, true, {
                                         fileName: "[project]/src/pages/patient.tsx",
-                                        lineNumber: 249,
+                                        lineNumber: 266,
                                         columnNumber: 19
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/patient.tsx",
-                                lineNumber: 247,
+                                lineNumber: 264,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/pages/patient.tsx",
-                        lineNumber: 242,
+                        lineNumber: 259,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -963,7 +974,7 @@ function PatientPage() {
                                 children: editingId ? "Modifier le Rendez-vous" : "Créer un Rendez-vous"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/patient.tsx",
-                                lineNumber: 273,
+                                lineNumber: 290,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -977,7 +988,7 @@ function PatientPage() {
                                                 children: "Docteur"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                lineNumber: 278,
+                                                lineNumber: 295,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -992,7 +1003,7 @@ function PatientPage() {
                                                         children: "Sélectionner un docteur"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/pages/patient.tsx",
-                                                        lineNumber: 286,
+                                                        lineNumber: 303,
                                                         columnNumber: 19
                                                     }, this),
                                                     doctors.map((d)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1000,19 +1011,19 @@ function PatientPage() {
                                                             children: d.name
                                                         }, d.id, false, {
                                                             fileName: "[project]/src/pages/patient.tsx",
-                                                            lineNumber: 288,
+                                                            lineNumber: 305,
                                                             columnNumber: 21
                                                         }, this))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                lineNumber: 279,
+                                                lineNumber: 296,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/pages/patient.tsx",
-                                        lineNumber: 277,
+                                        lineNumber: 294,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1022,7 +1033,7 @@ function PatientPage() {
                                                 children: "Date & Heure"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                lineNumber: 294,
+                                                lineNumber: 311,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1033,13 +1044,13 @@ function PatientPage() {
                                                 className: "w-full p-2 border rounded"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                lineNumber: 295,
+                                                lineNumber: 312,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/pages/patient.tsx",
-                                        lineNumber: 293,
+                                        lineNumber: 310,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1049,7 +1060,7 @@ function PatientPage() {
                                                 children: "Type de RDV"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                lineNumber: 305,
+                                                lineNumber: 322,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1062,7 +1073,7 @@ function PatientPage() {
                                                         children: "Consultation"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/pages/patient.tsx",
-                                                        lineNumber: 311,
+                                                        lineNumber: 328,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1070,7 +1081,7 @@ function PatientPage() {
                                                         children: "Urgence"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/pages/patient.tsx",
-                                                        lineNumber: 312,
+                                                        lineNumber: 329,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1078,7 +1089,7 @@ function PatientPage() {
                                                         children: "Suivi"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/pages/patient.tsx",
-                                                        lineNumber: 313,
+                                                        lineNumber: 330,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1086,19 +1097,19 @@ function PatientPage() {
                                                         children: "Contrôle"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/pages/patient.tsx",
-                                                        lineNumber: 314,
+                                                        lineNumber: 331,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                lineNumber: 306,
+                                                lineNumber: 323,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/pages/patient.tsx",
-                                        lineNumber: 304,
+                                        lineNumber: 321,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1108,7 +1119,7 @@ function PatientPage() {
                                                 children: "Notes (facultatif)"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                lineNumber: 319,
+                                                lineNumber: 336,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -1118,13 +1129,13 @@ function PatientPage() {
                                                 placeholder: "Ajoutez des notes si nécessaire"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/patient.tsx",
-                                                lineNumber: 320,
+                                                lineNumber: 337,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/pages/patient.tsx",
-                                        lineNumber: 318,
+                                        lineNumber: 335,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1134,19 +1145,19 @@ function PatientPage() {
                                         children: creating ? "En cours..." : editingId ? "Modifier Rendez-vous" : "Créer Rendez-vous"
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/patient.tsx",
-                                        lineNumber: 328,
+                                        lineNumber: 345,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/pages/patient.tsx",
-                                lineNumber: 276,
+                                lineNumber: 293,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/pages/patient.tsx",
-                        lineNumber: 272,
+                        lineNumber: 289,
                         columnNumber: 11
                     }, this)
                 ]
@@ -1154,7 +1165,7 @@ function PatientPage() {
         ]
     }, void 0, true, {
         fileName: "[project]/src/pages/patient.tsx",
-        lineNumber: 180,
+        lineNumber: 192,
         columnNumber: 5
     }, this);
 }

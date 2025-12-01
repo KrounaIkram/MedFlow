@@ -1,3 +1,4 @@
+// pages/api/payments/webhook.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import { prisma } from "../../../lib/prisma";
@@ -7,6 +8,7 @@ export const config = {
 };
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const buf = await new Promise<Buffer>((resolve) => {
     let data: Uint8Array[] = [];
@@ -16,36 +18,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const sig = req.headers["stripe-signature"]!;
 
-  let event;
+  let event: Stripe.Event;
   try {
     event = stripe.webhooks.constructEvent(buf, sig, process.env.STRIPE_WEBHOOK_SECRET!);
   } catch (err) {
     console.error("Webhook signature error", err);
-    return res.status(400).send(`Webhook error`);
+    return res.status(400).send(`Webhook error: ${(err as Error).message}`);
   }
 
-  // 🧾 Paiement réussi
   if (event.type === "checkout.session.completed") {
-    const session = event.data.object as any;
-    const invoiceId = session.metadata.invoiceId;
+    const session = event.data.object as Stripe.Checkout.Session;
+    const invoiceId = session.metadata?.invoiceId;
 
-    await prisma.invoice.update({
-      where: { id: invoiceId },
-      data: {
-        status: "PAID",
-        paidAt: new Date(),
-      },
-    });
+    if (invoiceId) {
+      await prisma.invoice.update({
+        where: { id: invoiceId },
+        data: {
+          status: "PAID",
+          paidAt: new Date(),
+        },
+      });
 
-    await prisma.payment.create({
-      data: {
-        invoiceId,
-        stripePaymentId: session.payment_intent,
-        amount: session.amount_total,
-        currency: session.currency,
-        status: "SUCCEEDED",
-      },
-    });
+      await prisma.payment.create({
+        data: {
+          invoiceId,
+          stripePaymentId: session.payment_intent as string,
+          amount: session.amount_total!,
+          currency: session.currency!,
+          status: "SUCCEEDED",
+        },
+      });
+    }
   }
 
   return res.json({ received: true });

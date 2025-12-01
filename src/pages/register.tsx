@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -44,100 +43,193 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="bg-[#eaf7ff] min-h-screen flex flex-col items-center justify-center px-4">
-      {/* Navbar */}
-      <nav className="fixed top-0 left-0 w-full h-[80px] bg-[#eaf7ff] flex items-center justify-between px-6 md:px-10 shadow-md z-50">
-        <div className="text-2xl md:text-3xl font-bold text-blue-600">DiagnoTech</div>
-        <ul className="hidden md:flex gap-6 text-lg text-gray-700">
-          <li><a href="/home" className="hover:text-blue-600">HOME</a></li>
-          <li><a href="/about-us" className="hover:text-blue-600">ABOUT</a></li>
-          <li><a href="#" className="hover:text-blue-600">SERVICES</a></li>
-          <li><a href="#" className="hover:text-blue-600">FAQs</a></li>
-          <li><a href="/contact" className="hover:text-blue-600">CONTACT</a></li>
-        </ul>
-        <div className="hidden md:flex items-center gap-3 text-lg">
-          <a href="/login" className="text-gray-700 hover:text-blue-600">Login</a>
-          <a href="/register" className="bg-[#4BB2FC] text-white px-4 py-2 rounded hover:bg-blue-500">Sign Up</a>
-        </div>
-      </nav>
-
-      {/* Main content */}
-      <div className="flex flex-col md:flex-row items-center justify-center w-full max-w-6xl mt-20 gap-8">
-        {/* Left image */}
-        <div className="w-full md:w-5/12 flex justify-center">
-          <img src="/doctors.png" alt="Doctors" className="w-full max-w-[450px] object-contain" />
-        </div>
-
-        {/* Right form */}
-        <div className="w-full md:w-7/12 flex justify-center">
-          <div className="bg-white p-8 md:p-12 rounded-xl shadow-xl border w-full max-w-[480px]">
-            <form onSubmit={onSubmit} className="space-y-6">
-              {/* Username */}
-              <div>
-                <label className="block text-base font-normal text-blue-500 mb-1">Username</label>
-                <input 
-                  type="text"
-                  name="name"
-                  required
-                  className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-700" 
-                />
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="block text-base font-normal text-blue-500 mb-1">Email</label>
-                <input 
-                  type="email"
-                  name="email"
-                  required
-                  className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-700" 
-                />
-              </div>
-
-              {/* Password */}
-              <div>
-                <label className="block text-base font-normal text-blue-500 mb-1">Password</label>
-                <input 
-                  type="password"
-                  name="password"
-                  required
-                  minLength={6}
-                  className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-700" 
-                />
-              </div>
-
-              {/* Role */}
-              <div>
-                <label className="block text-base font-normal text-blue-500 mb-1">Role</label>
-                <select
-                  name="role"
-                  defaultValue="PATIENT"
-                  className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-700"
-                >
-                  <option value="ADMIN">ADMIN</option>
-                  <option value="DOCTOR">DOCTOR</option>
-                  <option value="RECEPTIONIST">RECEPTIONIST</option>
-                  <option value="PATIENT">PATIENT</option>
-                </select>
-              </div>
-
-              {/* Register button */}
-              <button 
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white text-lg py-3 rounded-md transition font-medium mt-6"
-              >
-                {isLoading ? "Création..." : "Register"}
-              </button>
-
-              {/* Login link */}
-              <p className="text-center text-gray-600 text-base mt-4">
-                Already have an account? <a href="/login" className="font-semibold text-blue-600 hover:underline">Login</a>
-              </p>
-            </form>
-          </div>
-        </div>
+    <div className="container">
+      {/* Left image */}
+      <div className="leftSection">
+        <img src="/doctors.png" alt="Doctors" className="doctorsImage" />
       </div>
+
+      {/* Right form */}
+      <div className="rightSection">
+        <form onSubmit={onSubmit} className="loginBox">
+          <h2>Créer un compte DiagnoTech</h2>
+
+          <div className="inputGroup">
+            <label>Nom & Prénom</label>
+            <input type="text" name="name" placeholder="Votre nom" required />
+          </div>
+
+          <div className="inputGroup">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Email" required />
+          </div>
+
+          <div className="inputGroup">
+            <label>Mot de passe</label>
+            <input type="password" name="password" placeholder="Mot de passe" required minLength={6} />
+          </div>
+
+          <div className="inputGroup">
+            <label>Rôle</label>
+            <select name="role" defaultValue="PATIENT">
+              <option value="DOCTOR">DOCTOR</option>
+              <option value="RECEPTIONIST">RECEPTIONIST</option>
+              <option value="PATIENT">PATIENT</option>
+            </select>
+          </div>
+
+          <button type="submit" className="loginBtn" disabled={isLoading}>
+            {isLoading ? "Création..." : "S'inscrire"}
+          </button>
+
+          <p className="registerText">
+            Déjà un compte ? <a href="/login">Se connecter</a>
+          </p>
+        </form>
+      </div>
+
+      <style jsx>{`
+        .container {
+          display: flex;
+          width: 100%;
+          height: 100vh;
+        }
+
+        .leftSection {
+          width: 50%;
+          background-color: #4bb2fc;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .doctorsImage {
+          width: 70%;
+          max-height: 60%;
+        }
+
+        .rightSection {
+          width: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: #f7fcff;
+        }
+
+        .loginBox {
+          background: #ffffff;
+          padding: 60px;
+          border-radius: 30px;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+          width: 70%;
+          max-width: 500px;
+          text-align: center;
+        }
+
+        h2 {
+          color: #086df2;
+          margin-bottom: 20px;
+        }
+
+        .inputGroup {
+          text-align: left;
+          margin-bottom: 20px;
+        }
+
+        .inputGroup label {
+          font-size: 18px;
+          font-weight: bold;
+          color: #4bb2fc;
+          display: block;
+          margin-bottom: 5px;
+        }
+
+        .inputGroup input,
+        .inputGroup select {
+          width: 100%;
+          padding: 10px;
+          border: none;
+          border-bottom: 1px solid #ccc;
+          font-size: 16px;
+          outline: none;
+        }
+
+        .loginBtn {
+          width: 50%;
+          padding: 12px;
+          background-color: #4bb2fc;
+          color: white;
+          border: none;
+          border-radius: 20px;
+          font-size: 18px;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+
+        .loginBtn:hover {
+          background-color: #054bb5;
+        }
+
+        .loginBtn:disabled {
+          background-color: #7aa7e0;
+          cursor: not-allowed;
+        }
+
+        .registerText {
+          font-size: 16px;
+          margin-top: 15px;
+        }
+
+        .registerText a {
+          color: #292b84;
+          text-decoration: none;
+        }
+
+        .registerText a:hover {
+          text-decoration: underline;
+        }
+
+        @media (max-width: 992px) {
+          .container {
+            flex-direction: column;
+            height: auto;
+          }
+
+          .leftSection,
+          .rightSection {
+            width: 100%;
+            padding: 40px;
+          }
+
+          .loginBox {
+            width: 80%;
+          }
+
+          .doctorsImage {
+            width: 60%;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .loginBox {
+            width: 90%;
+          }
+        }
+
+        @media (max-width: 480px) {
+          h2 {
+            font-size: 24px;
+          }
+
+          .doctorsImage {
+            width: 80%;
+          }
+
+          .loginBox {
+            width: 95%;
+          }
+        }
+      `}</style>
     </div>
   );
 }

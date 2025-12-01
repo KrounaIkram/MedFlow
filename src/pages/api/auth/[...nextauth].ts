@@ -1,9 +1,15 @@
-import NextAuth from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "../../../lib/prisma";
 import { compare } from "bcryptjs";
 
-export default NextAuth({
+// ✅ Assurer que NEXTAUTH_SECRET existe
+const secret = process.env.NEXTAUTH_SECRET;
+if (!secret) {
+  throw new Error("Environment variable NEXTAUTH_SECRET is not set!");
+}
+
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -15,12 +21,11 @@ export default NextAuth({
           where: { email: credentials.email },
         });
 
-        if (!user) return null;
+        if (!user || !user.password) return null;
 
         const isValid = await compare(credentials.password, user.password);
         if (!isValid) return null;
 
-        // 🔥 Retourner le rôle réel depuis la DB
         return {
           id: user.id,
           name: user.name,
@@ -31,21 +36,29 @@ export default NextAuth({
     }),
   ],
 
-  secret: process.env.NEXTAUTH_SECRET,
+  secret, // ✅ string garanti
   session: { strategy: "jwt" },
 
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        token.role = user.role; // stocker le rôle
-      }
+      if (user) token.role = user.role;
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.role = token.role; // ajouter le rôle dans la session
+        session.user.role = token.role as
+          | "ADMIN"
+          | "DOCTOR"
+          | "RECEPTIONIST"
+          | "PATIENT";
       }
       return session;
     },
   },
-});
+
+  pages: {
+    signIn: "/login", // optionnel : page de login custom
+  },
+};
+
+export default NextAuth(authOptions);

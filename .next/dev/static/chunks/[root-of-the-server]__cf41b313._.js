@@ -465,12 +465,12 @@ function triggerUpdate(msg) {
 "[project]/src/pages/receptionist/dashboard.tsx [client] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
-// pages/receptionist/dashboard.tsx
 __turbopack_context__.s([
     "default",
     ()=>ReceptionistDashboard
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react/jsx-dev-runtime.js [client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$styled$2d$jsx$2f$style$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/styled-jsx/style.js [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react/index.js [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/sonner/dist/index.mjs [client] (ecmascript)");
 ;
@@ -478,16 +478,15 @@ var _s = __turbopack_context__.k.signature();
 "use client";
 ;
 ;
+;
 function ReceptionistDashboard() {
     _s();
     const [activeTab, setActiveTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])("appointments");
-    // Données
     const [appointments, setAppointments] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [patients, setPatients] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [doctors, setDoctors] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [consultations, setConsultations] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [invoices, setInvoices] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])([]);
-    // Formulaires
     const [newPatient, setNewPatient] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])({
         firstName: "",
         lastName: "",
@@ -499,7 +498,6 @@ function ReceptionistDashboard() {
         consultationId: "",
         amount: ""
     });
-    // Chargement
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "ReceptionistDashboard.useEffect": ()=>{
             const loadData = {
@@ -521,7 +519,6 @@ function ReceptionistDashboard() {
             loadData();
         }
     }["ReceptionistDashboard.useEffect"], []);
-    // Créer un patient
     const handleCreatePatient = async (e)=>{
         e.preventDefault();
         try {
@@ -549,11 +546,10 @@ function ReceptionistDashboard() {
                 const err = await res.json().catch(()=>({}));
                 __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$client$5d$__$28$ecmascript$29$__["toast"].error(err.error || "Erreur lors de la création du patient");
             }
-        } catch (err) {
+        } catch  {
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$client$5d$__$28$ecmascript$29$__["toast"].error("Erreur réseau");
         }
     };
-    // Créer une facture en dinar tunisien (TND)
     const handleCreateInvoice = async (e)=>{
         e.preventDefault();
         const amountNum = parseFloat(newInvoice.amount);
@@ -590,224 +586,230 @@ function ReceptionistDashboard() {
                 const err = await res.json().catch(()=>({}));
                 __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$client$5d$__$28$ecmascript$29$__["toast"].error(err.error || "Erreur lors de la création de la facture");
             }
-        } catch (err) {
+        } catch  {
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$client$5d$__$28$ecmascript$29$__["toast"].error("Erreur réseau");
         }
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "p-6 max-w-7xl mx-auto",
+        className: "jsx-fd66d7e33ac17fc" + " " + "dashboardWrapper",
         children: [
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                className: "text-3xl font-bold mb-6",
-                children: "Dashboard Réceptionniste"
-            }, void 0, false, {
-                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                lineNumber: 131,
-                columnNumber: 7
-            }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "mb-6",
+                className: "jsx-fd66d7e33ac17fc" + " " + "dashboardContainer",
                 children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                        onClick: ()=>setActiveTab("appointments"),
-                        className: `px-4 py-2 mr-2 rounded ${activeTab === "appointments" ? "bg-blue-600 text-white" : "bg-gray-200"}`,
-                        children: "🗓️ Rendez-vous"
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                        className: "jsx-fd66d7e33ac17fc",
+                        children: "Dashboard Réceptionniste"
                     }, void 0, false, {
                         fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                        lineNumber: 134,
+                        lineNumber: 101,
                         columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                        onClick: ()=>setActiveTab("patients"),
-                        className: `px-4 py-2 mr-2 rounded ${activeTab === "patients" ? "bg-blue-600 text-white" : "bg-gray-200"}`,
-                        children: "👤 Patients"
-                    }, void 0, false, {
-                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                        lineNumber: 140,
-                        columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                        onClick: ()=>setActiveTab("invoices"),
-                        className: `px-4 py-2 rounded ${activeTab === "invoices" ? "bg-blue-600 text-white" : "bg-gray-200"}`,
-                        children: "💰 Facturation"
-                    }, void 0, false, {
-                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                        lineNumber: 146,
-                        columnNumber: 9
-                    }, this)
-                ]
-            }, void 0, true, {
-                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                lineNumber: 133,
-                columnNumber: 7
-            }, this),
-            activeTab === "appointments" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                        className: "text-2xl font-semibold mb-4",
-                        children: "Liste des Rendez-vous"
-                    }, void 0, false, {
-                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                        lineNumber: 157,
-                        columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "overflow-x-auto",
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
-                            className: "min-w-full bg-white border",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("thead", {
-                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "py-2 px-4 border",
-                                                children: "Patient"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                lineNumber: 162,
-                                                columnNumber: 19
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "py-2 px-4 border",
-                                                children: "Docteur"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                lineNumber: 163,
-                                                columnNumber: 19
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "py-2 px-4 border",
-                                                children: "Date"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                lineNumber: 164,
-                                                columnNumber: 19
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "py-2 px-4 border",
-                                                children: "Type"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                lineNumber: 165,
-                                                columnNumber: 19
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "py-2 px-4 border",
-                                                children: "Statut"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                lineNumber: 166,
-                                                columnNumber: 19
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                        lineNumber: 161,
-                                        columnNumber: 17
-                                    }, this)
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                    lineNumber: 160,
-                                    columnNumber: 15
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
-                                    children: appointments.map((appt)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "py-2 px-4 border",
-                                                    children: [
-                                                        appt.patient.firstName,
-                                                        " ",
-                                                        appt.patient.lastName
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                    lineNumber: 172,
-                                                    columnNumber: 21
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "py-2 px-4 border",
-                                                    children: appt.doctor.name
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                    lineNumber: 173,
-                                                    columnNumber: 21
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "py-2 px-4 border",
-                                                    children: new Date(appt.date).toLocaleString()
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                    lineNumber: 174,
-                                                    columnNumber: 21
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "py-2 px-4 border",
-                                                    children: appt.type
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                    lineNumber: 175,
-                                                    columnNumber: 21
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "py-2 px-4 border",
-                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                        className: `px-2 py-1 rounded text-xs ${appt.status === "DONE" ? "bg-green-100 text-green-800" : appt.status === "CANCELLED" ? "bg-red-100 text-red-800" : "bg-yellow-100 text-yellow-800"}`,
-                                                        children: appt.status
+                        className: "jsx-fd66d7e33ac17fc" + " " + "tabs",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                onClick: ()=>setActiveTab("appointments"),
+                                className: "jsx-fd66d7e33ac17fc" + " " + ((activeTab === "appointments" ? "active" : "") || ""),
+                                children: "🗓️ Rendez-vous"
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                lineNumber: 104,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                onClick: ()=>setActiveTab("patients"),
+                                className: "jsx-fd66d7e33ac17fc" + " " + ((activeTab === "patients" ? "active" : "") || ""),
+                                children: "👤 Patients"
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                lineNumber: 105,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                onClick: ()=>setActiveTab("invoices"),
+                                className: "jsx-fd66d7e33ac17fc" + " " + ((activeTab === "invoices" ? "active" : "") || ""),
+                                children: "💰 Facturation"
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                lineNumber: 106,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                        lineNumber: 103,
+                        columnNumber: 9
+                    }, this),
+                    activeTab === "appointments" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "jsx-fd66d7e33ac17fc" + " " + "section",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                className: "jsx-fd66d7e33ac17fc",
+                                children: "Liste des Rendez-vous"
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                lineNumber: 111,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "jsx-fd66d7e33ac17fc" + " " + "tableWrapper",
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
+                                    className: "jsx-fd66d7e33ac17fc",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("thead", {
+                                            className: "jsx-fd66d7e33ac17fc",
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                className: "jsx-fd66d7e33ac17fc",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                        className: "jsx-fd66d7e33ac17fc",
+                                                        children: "Patient"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                        lineNumber: 177,
-                                                        columnNumber: 23
+                                                        lineNumber: 116,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                        className: "jsx-fd66d7e33ac17fc",
+                                                        children: "Docteur"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                        lineNumber: 117,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                        className: "jsx-fd66d7e33ac17fc",
+                                                        children: "Date"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                        lineNumber: 118,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                        className: "jsx-fd66d7e33ac17fc",
+                                                        children: "Type"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                        lineNumber: 119,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                        className: "jsx-fd66d7e33ac17fc",
+                                                        children: "Statut"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                        lineNumber: 120,
+                                                        columnNumber: 21
                                                     }, this)
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                    lineNumber: 176,
-                                                    columnNumber: 21
-                                                }, this)
-                                            ]
-                                        }, appt.id, true, {
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                lineNumber: 115,
+                                                columnNumber: 19
+                                            }, this)
+                                        }, void 0, false, {
                                             fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                            lineNumber: 171,
-                                            columnNumber: 19
-                                        }, this))
-                                }, void 0, false, {
+                                            lineNumber: 114,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
+                                            className: "jsx-fd66d7e33ac17fc",
+                                            children: appointments.map((appt)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                    className: "jsx-fd66d7e33ac17fc",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "jsx-fd66d7e33ac17fc",
+                                                            children: [
+                                                                appt.patient.firstName,
+                                                                " ",
+                                                                appt.patient.lastName
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                            lineNumber: 126,
+                                                            columnNumber: 23
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "jsx-fd66d7e33ac17fc",
+                                                            children: appt.doctor.name
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                            lineNumber: 127,
+                                                            columnNumber: 23
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "jsx-fd66d7e33ac17fc",
+                                                            children: new Date(appt.date).toLocaleString()
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                            lineNumber: 128,
+                                                            columnNumber: 23
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "jsx-fd66d7e33ac17fc",
+                                                            children: appt.type
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                            lineNumber: 129,
+                                                            columnNumber: 23
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "jsx-fd66d7e33ac17fc",
+                                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                className: "jsx-fd66d7e33ac17fc" + " " + `status ${appt.status.toLowerCase()}`,
+                                                                children: appt.status
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                                lineNumber: 131,
+                                                                columnNumber: 25
+                                                            }, this)
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                            lineNumber: 130,
+                                                            columnNumber: 23
+                                                        }, this)
+                                                    ]
+                                                }, appt.id, true, {
+                                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                    lineNumber: 125,
+                                                    columnNumber: 21
+                                                }, this))
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                            lineNumber: 123,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
                                     fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                    lineNumber: 169,
+                                    lineNumber: 113,
                                     columnNumber: 15
                                 }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                            lineNumber: 159,
-                            columnNumber: 13
-                        }, this)
-                    }, void 0, false, {
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                lineNumber: 112,
+                                columnNumber: 13
+                            }, this)
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                        lineNumber: 158,
-                        columnNumber: 11
-                    }, this)
-                ]
-            }, void 0, true, {
-                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                lineNumber: 156,
-                columnNumber: 9
-            }, this),
-            activeTab === "patients" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                        className: "text-2xl font-semibold mb-4",
-                        children: "Enregistrement Patient"
-                    }, void 0, false, {
-                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                        lineNumber: 196,
+                        lineNumber: 110,
                         columnNumber: 11
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
-                        onSubmit: handleCreatePatient,
-                        className: "mb-8 p-4 border rounded",
+                    activeTab === "patients" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "jsx-fd66d7e33ac17fc" + " " + "section",
                         children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "grid grid-cols-1 md:grid-cols-2 gap-4",
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                className: "jsx-fd66d7e33ac17fc",
+                                children: "Enregistrement Patient"
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                lineNumber: 143,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
+                                onSubmit: handleCreatePatient,
+                                className: "jsx-fd66d7e33ac17fc" + " " + "formBox",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                         type: "text",
@@ -817,11 +819,11 @@ function ReceptionistDashboard() {
                                                 ...newPatient,
                                                 firstName: e.target.value
                                             }),
-                                        className: "p-2 border rounded",
-                                        required: true
+                                        required: true,
+                                        className: "jsx-fd66d7e33ac17fc"
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                        lineNumber: 199,
+                                        lineNumber: 145,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -832,11 +834,11 @@ function ReceptionistDashboard() {
                                                 ...newPatient,
                                                 lastName: e.target.value
                                             }),
-                                        className: "p-2 border rounded",
-                                        required: true
+                                        required: true,
+                                        className: "jsx-fd66d7e33ac17fc"
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                        lineNumber: 207,
+                                        lineNumber: 146,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -847,10 +849,10 @@ function ReceptionistDashboard() {
                                                 ...newPatient,
                                                 email: e.target.value
                                             }),
-                                        className: "p-2 border rounded"
+                                        className: "jsx-fd66d7e33ac17fc"
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                        lineNumber: 215,
+                                        lineNumber: 147,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -861,159 +863,155 @@ function ReceptionistDashboard() {
                                                 ...newPatient,
                                                 phone: e.target.value
                                             }),
-                                        className: "p-2 border rounded"
+                                        className: "jsx-fd66d7e33ac17fc"
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                        lineNumber: 222,
+                                        lineNumber: 148,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                        type: "submit",
+                                        className: "jsx-fd66d7e33ac17fc",
+                                        children: "➕ Ajouter Patient"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                        lineNumber: 149,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                lineNumber: 198,
+                                lineNumber: 144,
                                 columnNumber: 13
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                type: "submit",
-                                className: "mt-4 bg-green-600 text-white px-4 py-2 rounded",
-                                children: "➕ Ajouter Patient"
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                className: "jsx-fd66d7e33ac17fc",
+                                children: "Liste des Patients"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                lineNumber: 230,
+                                lineNumber: 152,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "jsx-fd66d7e33ac17fc" + " " + "tableWrapper",
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
+                                    className: "jsx-fd66d7e33ac17fc",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("thead", {
+                                            className: "jsx-fd66d7e33ac17fc",
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                className: "jsx-fd66d7e33ac17fc",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                        className: "jsx-fd66d7e33ac17fc",
+                                                        children: "Nom"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                        lineNumber: 157,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                        className: "jsx-fd66d7e33ac17fc",
+                                                        children: "Email"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                        lineNumber: 158,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                        className: "jsx-fd66d7e33ac17fc",
+                                                        children: "Téléphone"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                        lineNumber: 159,
+                                                        columnNumber: 21
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                lineNumber: 156,
+                                                columnNumber: 19
+                                            }, this)
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                            lineNumber: 155,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
+                                            className: "jsx-fd66d7e33ac17fc",
+                                            children: patients.map((p)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                    className: "jsx-fd66d7e33ac17fc",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "jsx-fd66d7e33ac17fc",
+                                                            children: [
+                                                                p.firstName,
+                                                                " ",
+                                                                p.lastName
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                            lineNumber: 165,
+                                                            columnNumber: 23
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "jsx-fd66d7e33ac17fc",
+                                                            children: p.email || "–"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                            lineNumber: 166,
+                                                            columnNumber: 23
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "jsx-fd66d7e33ac17fc",
+                                                            children: p.phone || "–"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                            lineNumber: 167,
+                                                            columnNumber: 23
+                                                        }, this)
+                                                    ]
+                                                }, p.id, true, {
+                                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                    lineNumber: 164,
+                                                    columnNumber: 21
+                                                }, this))
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                            lineNumber: 162,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                    lineNumber: 154,
+                                    columnNumber: 15
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                lineNumber: 153,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                        lineNumber: 197,
+                        lineNumber: 142,
                         columnNumber: 11
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                        className: "text-2xl font-semibold mb-4",
-                        children: "Liste des Patients"
-                    }, void 0, false, {
-                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                        lineNumber: 235,
-                        columnNumber: 11
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "overflow-x-auto",
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
-                            className: "min-w-full bg-white border",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("thead", {
-                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "py-2 px-4 border",
-                                                children: "Nom"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                lineNumber: 240,
-                                                columnNumber: 19
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "py-2 px-4 border",
-                                                children: "Email"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                lineNumber: 241,
-                                                columnNumber: 19
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "py-2 px-4 border",
-                                                children: "Téléphone"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                lineNumber: 242,
-                                                columnNumber: 19
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                        lineNumber: 239,
-                                        columnNumber: 17
-                                    }, this)
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                    lineNumber: 238,
-                                    columnNumber: 15
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
-                                    children: patients.map((pat)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "py-2 px-4 border",
-                                                    children: [
-                                                        pat.firstName,
-                                                        " ",
-                                                        pat.lastName
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                    lineNumber: 248,
-                                                    columnNumber: 21
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "py-2 px-4 border",
-                                                    children: pat.email || "–"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                    lineNumber: 249,
-                                                    columnNumber: 21
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "py-2 px-4 border",
-                                                    children: pat.phone || "–"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                    lineNumber: 250,
-                                                    columnNumber: 21
-                                                }, this)
-                                            ]
-                                        }, pat.id, true, {
-                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                            lineNumber: 247,
-                                            columnNumber: 19
-                                        }, this))
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                    lineNumber: 245,
-                                    columnNumber: 15
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                            lineNumber: 237,
-                            columnNumber: 13
-                        }, this)
-                    }, void 0, false, {
-                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                        lineNumber: 236,
-                        columnNumber: 11
-                    }, this)
-                ]
-            }, void 0, true, {
-                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                lineNumber: 195,
-                columnNumber: 9
-            }, this),
-            activeTab === "invoices" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                        className: "text-2xl font-semibold mb-4",
-                        children: "Créer une Facture"
-                    }, void 0, false, {
-                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                        lineNumber: 262,
-                        columnNumber: 11
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
-                        onSubmit: handleCreateInvoice,
-                        className: "mb-8 p-4 border rounded",
+                    activeTab === "invoices" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "jsx-fd66d7e33ac17fc" + " " + "section",
                         children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "grid grid-cols-1 md:grid-cols-2 gap-4",
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                className: "jsx-fd66d7e33ac17fc",
+                                children: "Créer une Facture"
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                lineNumber: 178,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
+                                onSubmit: handleCreateInvoice,
+                                className: "jsx-fd66d7e33ac17fc" + " " + "formBox",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                                         value: newInvoice.patientId,
@@ -1021,19 +1019,21 @@ function ReceptionistDashboard() {
                                                 ...newInvoice,
                                                 patientId: e.target.value
                                             }),
-                                        className: "p-2 border rounded",
                                         required: true,
+                                        className: "jsx-fd66d7e33ac17fc",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                 value: "",
+                                                className: "jsx-fd66d7e33ac17fc",
                                                 children: "Sélectionner un patient"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                lineNumber: 271,
+                                                lineNumber: 181,
                                                 columnNumber: 17
                                             }, this),
                                             patients.map((p)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                     value: p.id,
+                                                    className: "jsx-fd66d7e33ac17fc",
                                                     children: [
                                                         p.firstName,
                                                         " ",
@@ -1041,13 +1041,13 @@ function ReceptionistDashboard() {
                                                     ]
                                                 }, p.id, true, {
                                                     fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                    lineNumber: 273,
-                                                    columnNumber: 19
+                                                    lineNumber: 182,
+                                                    columnNumber: 34
                                                 }, this))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                        lineNumber: 265,
+                                        lineNumber: 180,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1056,18 +1056,20 @@ function ReceptionistDashboard() {
                                                 ...newInvoice,
                                                 consultationId: e.target.value
                                             }),
-                                        className: "p-2 border rounded",
+                                        className: "jsx-fd66d7e33ac17fc",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                 value: "",
-                                                children: "Aucune consultation (facture manuelle)"
+                                                className: "jsx-fd66d7e33ac17fc",
+                                                children: "Aucune consultation"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                lineNumber: 281,
+                                                lineNumber: 185,
                                                 columnNumber: 17
                                             }, this),
                                             consultations.map((c)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                     value: c.id,
+                                                    className: "jsx-fd66d7e33ac17fc",
                                                     children: [
                                                         new Date(c.datetime).toLocaleString(),
                                                         " - ",
@@ -1075,13 +1077,13 @@ function ReceptionistDashboard() {
                                                     ]
                                                 }, c.id, true, {
                                                     fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                    lineNumber: 283,
-                                                    columnNumber: 19
+                                                    lineNumber: 186,
+                                                    columnNumber: 39
                                                 }, this))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                        lineNumber: 276,
+                                        lineNumber: 184,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1093,170 +1095,178 @@ function ReceptionistDashboard() {
                                                 ...newInvoice,
                                                 amount: e.target.value
                                             }),
-                                        className: "p-2 border rounded",
-                                        required: true
+                                        required: true,
+                                        className: "jsx-fd66d7e33ac17fc"
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                        lineNumber: 288,
+                                        lineNumber: 188,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                        type: "submit",
+                                        className: "jsx-fd66d7e33ac17fc",
+                                        children: "💳 Créer Facture (TND)"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                        lineNumber: 189,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                lineNumber: 264,
+                                lineNumber: 179,
                                 columnNumber: 13
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                type: "submit",
-                                className: "mt-4 bg-blue-600 text-white px-4 py-2 rounded",
-                                children: "💳 Créer Facture (TND)"
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                className: "jsx-fd66d7e33ac17fc",
+                                children: "Liste des Factures"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                lineNumber: 299,
+                                lineNumber: 192,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "jsx-fd66d7e33ac17fc" + " " + "tableWrapper",
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
+                                    className: "jsx-fd66d7e33ac17fc",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("thead", {
+                                            className: "jsx-fd66d7e33ac17fc",
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                className: "jsx-fd66d7e33ac17fc",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                        className: "jsx-fd66d7e33ac17fc",
+                                                        children: "Patient"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                        lineNumber: 197,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                        className: "jsx-fd66d7e33ac17fc",
+                                                        children: "Montant"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                        lineNumber: 198,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                        className: "jsx-fd66d7e33ac17fc",
+                                                        children: "Statut"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                        lineNumber: 199,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                        className: "jsx-fd66d7e33ac17fc",
+                                                        children: "Date"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                        lineNumber: 200,
+                                                        columnNumber: 21
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                lineNumber: 196,
+                                                columnNumber: 19
+                                            }, this)
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                            lineNumber: 195,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
+                                            className: "jsx-fd66d7e33ac17fc",
+                                            children: invoices.map((inv)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                    className: "jsx-fd66d7e33ac17fc",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "jsx-fd66d7e33ac17fc",
+                                                            children: inv.patient ? `${inv.patient.firstName} ${inv.patient.lastName}` : "Patient supprimé"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                            lineNumber: 206,
+                                                            columnNumber: 23
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "jsx-fd66d7e33ac17fc",
+                                                            children: [
+                                                                (inv.amount / 100).toFixed(2),
+                                                                " TND"
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                            lineNumber: 207,
+                                                            columnNumber: 23
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "jsx-fd66d7e33ac17fc",
+                                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                className: "jsx-fd66d7e33ac17fc" + " " + `status ${inv.status.toLowerCase()}`,
+                                                                children: inv.status
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                                lineNumber: 208,
+                                                                columnNumber: 27
+                                                            }, this)
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                            lineNumber: 208,
+                                                            columnNumber: 23
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "jsx-fd66d7e33ac17fc",
+                                                            children: new Date(inv.createdAt).toLocaleDateString()
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                            lineNumber: 209,
+                                                            columnNumber: 23
+                                                        }, this)
+                                                    ]
+                                                }, inv.id, true, {
+                                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                                    lineNumber: 205,
+                                                    columnNumber: 21
+                                                }, this))
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                            lineNumber: 203,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                    lineNumber: 194,
+                                    columnNumber: 15
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
+                                lineNumber: 193,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                        lineNumber: 263,
-                        columnNumber: 11
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                        className: "text-2xl font-semibold mb-4",
-                        children: "Liste des Factures"
-                    }, void 0, false, {
-                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                        lineNumber: 304,
-                        columnNumber: 11
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "overflow-x-auto",
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
-                            className: "min-w-full bg-white border",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("thead", {
-                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "py-2 px-4 border",
-                                                children: "Patient"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                lineNumber: 309,
-                                                columnNumber: 19
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "py-2 px-4 border",
-                                                children: "Montant"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                lineNumber: 310,
-                                                columnNumber: 19
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "py-2 px-4 border",
-                                                children: "Statut"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                lineNumber: 311,
-                                                columnNumber: 19
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "py-2 px-4 border",
-                                                children: "Date"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                lineNumber: 312,
-                                                columnNumber: 19
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                        lineNumber: 308,
-                                        columnNumber: 17
-                                    }, this)
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                    lineNumber: 307,
-                                    columnNumber: 15
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
-                                    children: invoices.map((inv)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "py-2 px-4 border",
-                                                    children: inv.patient ? `${inv.patient.firstName} ${inv.patient.lastName}` : "Patient supprimé"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                    lineNumber: 319,
-                                                    columnNumber: 21
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "py-2 px-4 border",
-                                                    children: [
-                                                        (inv.amount / 100).toFixed(2),
-                                                        " TND"
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                    lineNumber: 324,
-                                                    columnNumber: 21
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "py-2 px-4 border",
-                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                        className: `px-2 py-1 rounded text-xs ${inv.status === "PAID" ? "bg-green-100 text-green-800" : inv.status === "CANCELED" ? "bg-red-100 text-red-800" : "bg-yellow-100 text-yellow-800"}`,
-                                                        children: inv.status
-                                                    }, void 0, false, {
-                                                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                        lineNumber: 328,
-                                                        columnNumber: 23
-                                                    }, this)
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                    lineNumber: 327,
-                                                    columnNumber: 21
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "py-2 px-4 border",
-                                                    children: new Date(inv.createdAt).toLocaleDateString()
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                                    lineNumber: 336,
-                                                    columnNumber: 21
-                                                }, this)
-                                            ]
-                                        }, inv.id, true, {
-                                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                            lineNumber: 318,
-                                            columnNumber: 19
-                                        }, this))
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                                    lineNumber: 316,
-                                    columnNumber: 15
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                            lineNumber: 306,
-                            columnNumber: 13
-                        }, this)
-                    }, void 0, false, {
-                        fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                        lineNumber: 305,
+                        lineNumber: 177,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-                lineNumber: 261,
-                columnNumber: 9
-            }, this)
+                lineNumber: 100,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$styled$2d$jsx$2f$style$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
+                id: "fd66d7e33ac17fc",
+                children: ".dashboardWrapper.jsx-fd66d7e33ac17fc{background:url(https://i.pinimg.com/1200x/ae/f6/17/aef6170679bdead47b720fd69615d286.jpg) 50%/cover no-repeat fixed;justify-content:center;width:100%;min-height:100vh;padding:30px 0;animation:1.5s fadeIn;display:flex}.dashboardContainer.jsx-fd66d7e33ac17fc{width:100%;max-width:1400px;padding:30px}h1.jsx-fd66d7e33ac17fc{color:#fff;text-align:center;text-shadow:2px 2px 8px #00000080;margin-bottom:30px;font-size:36px;animation:1s fadeInDown}.tabs.jsx-fd66d7e33ac17fc{text-align:center;margin-bottom:40px}.tabs.jsx-fd66d7e33ac17fc button.jsx-fd66d7e33ac17fc{cursor:pointer;color:#fff;-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);background:#ffffff4d;border:none;border-radius:30px;margin:0 7px;padding:12px 25px;font-size:16px;font-weight:700;transition:all .4s;transform:scale(1)}.tabs.jsx-fd66d7e33ac17fc button.jsx-fd66d7e33ac17fc:hover{background:#ffffff80;transform:scale(1.1)}.tabs.jsx-fd66d7e33ac17fc button.active.jsx-fd66d7e33ac17fc{color:#0d47a1;background:#fffc;box-shadow:0 5px 15px #0000004d}.section.jsx-fd66d7e33ac17fc{-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);background:#ffffffd9;border-radius:20px;margin-bottom:50px;padding:25px;transition:all .3s;box-shadow:0 8px 20px #00000040}.section.jsx-fd66d7e33ac17fc:hover{transform:translateY(-3px);box-shadow:0 12px 25px #0000004d}.section.jsx-fd66d7e33ac17fc h2.jsx-fd66d7e33ac17fc{color:#0d47a1;margin-bottom:20px}.formBox.jsx-fd66d7e33ac17fc{background:#ffffffe6;border-radius:15px;flex-wrap:wrap;gap:15px;margin-bottom:20px;padding:20px;transition:all .3s;display:flex;box-shadow:0 4px 15px #00000026}.formBox.jsx-fd66d7e33ac17fc input.jsx-fd66d7e33ac17fc,.formBox.jsx-fd66d7e33ac17fc select.jsx-fd66d7e33ac17fc{border:1px solid #90caf9;border-radius:12px;flex:1;min-width:180px;padding:12px;transition:all .3s}.formBox.jsx-fd66d7e33ac17fc input.jsx-fd66d7e33ac17fc:focus,.formBox.jsx-fd66d7e33ac17fc select.jsx-fd66d7e33ac17fc:focus{border-color:#0d47a1;outline:none;box-shadow:0 0 8px #0d47a1}.formBox.jsx-fd66d7e33ac17fc button.jsx-fd66d7e33ac17fc{color:#fff;cursor:pointer;background:#0d47a1;border:none;border-radius:25px;padding:12px 25px;font-weight:700;transition:all .3s}.formBox.jsx-fd66d7e33ac17fc button.jsx-fd66d7e33ac17fc:hover{background:#1565c0;transform:translateY(-2px)}.tableWrapper.jsx-fd66d7e33ac17fc{border-radius:15px;overflow-x:auto;box-shadow:0 4px 20px #0000001a}table.jsx-fd66d7e33ac17fc{border-collapse:collapse;background:#fff;width:100%;transition:all .3s}th.jsx-fd66d7e33ac17fc,td.jsx-fd66d7e33ac17fc{text-align:left;border-bottom:1px solid #ccc;padding:12px}th.jsx-fd66d7e33ac17fc{color:#0d47a1;background:#90caf9;font-weight:700}tbody.jsx-fd66d7e33ac17fc tr.jsx-fd66d7e33ac17fc:hover{background:#007bff1a;transition:all .2s;transform:scale(1.01)}.status.jsx-fd66d7e33ac17fc{text-align:center;border-radius:15px;padding:5px 12px;font-size:13px;font-weight:700}.status.done.jsx-fd66d7e33ac17fc{color:#065f46;background:#d1fae5}.status.cancelled.jsx-fd66d7e33ac17fc{color:#991b1b;background:#fee2e2}.status.pending.jsx-fd66d7e33ac17fc{color:#856404;background:#fff3cd}@keyframes fadeIn{0%{opacity:0}to{opacity:1}}@keyframes fadeInDown{0%{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}@media (width<=1024px){.dashboardContainer.jsx-fd66d7e33ac17fc{padding:20px}.tabs.jsx-fd66d7e33ac17fc button.jsx-fd66d7e33ac17fc{padding:10px 15px;font-size:14px}.formBox.jsx-fd66d7e33ac17fc input.jsx-fd66d7e33ac17fc,.formBox.jsx-fd66d7e33ac17fc select.jsx-fd66d7e33ac17fc{min-width:140px}}@media (width<=768px){.section.jsx-fd66d7e33ac17fc{padding:15px}}"
+            }, void 0, false, void 0, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/pages/receptionist/dashboard.tsx",
-        lineNumber: 130,
+        lineNumber: 99,
         columnNumber: 5
     }, this);
 }

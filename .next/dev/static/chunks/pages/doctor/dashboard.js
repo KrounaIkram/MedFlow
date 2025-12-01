@@ -1,11 +1,11 @@
 __turbopack_load_page_chunks__("/doctor/dashboard", [
-  "static/chunks/node_modules_next_dist_compiled_8ca6b690._.js",
-  "static/chunks/node_modules_next_dist_shared_lib_82dc2e9d._.js",
-  "static/chunks/node_modules_next_dist_client_d0aa886c._.js",
-  "static/chunks/node_modules_next_dist_6024eba3._.js",
-  "static/chunks/node_modules_react-dom_4411d9bd._.js",
-  "static/chunks/node_modules_6bf7e186._.js",
-  "static/chunks/[root-of-the-server]__623fcc7e._.js",
-  "static/chunks/src_pages_doctor_dashboard_tsx_2da965e7._.js",
-  "static/chunks/turbopack-src_pages_doctor_dashboard_tsx_88f14deb._.js"
+  "static/chunks/4fa10_next_dist_compiled_a7a84cee._.js",
+  "static/chunks/4fa10_next_dist_shared_lib_04e4d660._.js",
+  "static/chunks/4fa10_next_dist_client_299a9719._.js",
+  "static/chunks/4fa10_next_dist_cc6aebe5._.js",
+  "static/chunks/4fa10_react-dom_335015aa._.js",
+  "static/chunks/4fa10_b6d6f491._.js",
+  "static/chunks/[root-of-the-server]__397b3736._.js",
+  "static/chunks/MedFlow3_src_pages_doctor_dashboard_tsx_2da965e7._.js",
+  "static/chunks/turbopack-MedFlow3_src_pages_doctor_dashboard_tsx_6c58c8a7._.js"
 ])

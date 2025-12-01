@@ -1,8 +1,8 @@
 var R=require("../../chunks/ssr/[turbopack]_runtime.js")("server/pages/receptionist/dashboard.js")
-R.c("server/chunks/ssr/node_modules_next_dist_a8c38f15._.js")
-R.c("server/chunks/ssr/[root-of-the-server]__ca3a2bec._.js")
-R.c("server/chunks/ssr/node_modules_186c80ea._.js")
+R.c("server/chunks/ssr/4fa10_next_dist_4b21b8bf._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__cd969a3e._.js")
+R.c("server/chunks/ssr/4fa10_8f005ade._.js")
 R.c("server/chunks/ssr/[root-of-the-server]__e6a4d965._.js")
-R.c("server/chunks/ssr/[root-of-the-server]__ac170815._.js")
-R.m("[project]/node_modules/next/dist/esm/build/templates/pages.js { INNER_PAGE => \"[project]/src/pages/receptionist/dashboard.tsx [ssr] (ecmascript)\", INNER_DOCUMENT => \"[project]/node_modules/next/document.js [ssr] (ecmascript)\", INNER_APP => \"[project]/src/pages/_app.tsx [ssr] (ecmascript)\" } [ssr] (ecmascript)")
-module.exports=R.m("[project]/node_modules/next/dist/esm/build/templates/pages.js { INNER_PAGE => \"[project]/src/pages/receptionist/dashboard.tsx [ssr] (ecmascript)\", INNER_DOCUMENT => \"[project]/node_modules/next/document.js [ssr] (ecmascript)\", INNER_APP => \"[project]/src/pages/_app.tsx [ssr] (ecmascript)\" } [ssr] (ecmascript)").exports
+R.c("server/chunks/ssr/[root-of-the-server]__551d9cb0._.js")
+R.m("[project]/MedFlow3/node_modules/next/dist/esm/build/templates/pages.js { INNER_PAGE => \"[project]/MedFlow3/src/pages/receptionist/dashboard.tsx [ssr] (ecmascript)\", INNER_DOCUMENT => \"[project]/MedFlow3/node_modules/next/document.js [ssr] (ecmascript)\", INNER_APP => \"[project]/MedFlow3/src/pages/_app.tsx [ssr] (ecmascript)\" } [ssr] (ecmascript)")
+module.exports=R.m("[project]/MedFlow3/node_modules/next/dist/esm/build/templates/pages.js { INNER_PAGE => \"[project]/MedFlow3/src/pages/receptionist/dashboard.tsx [ssr] (ecmascript)\", INNER_DOCUMENT => \"[project]/MedFlow3/node_modules/next/document.js [ssr] (ecmascript)\", INNER_APP => \"[project]/MedFlow3/src/pages/_app.tsx [ssr] (ecmascript)\" } [ssr] (ecmascript)").exports

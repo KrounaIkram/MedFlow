@@ -5,8 +5,14 @@ self.__BUILD_MANIFEST = {
   "/admin/dashboard": [
     "static/chunks/pages/admin/dashboard.js"
   ],
+  "/doctor/dashboard": [
+    "static/chunks/pages/doctor/dashboard.js"
+  ],
   "/login": [
     "static/chunks/pages/login.js"
+  ],
+  "/receptionist/dashboard": [
+    "static/chunks/pages/receptionist/dashboard.js"
   ],
   "__rewrites": {
     "afterFiles": [],
@@ -17,6 +23,7 @@ self.__BUILD_MANIFEST = {
     "/_app",
     "/_error",
     "/admin/dashboard",
+    "/api/admin/clinic",
     "/api/admin/stats",
     "/api/appointments",
     "/api/appointments/[id]",

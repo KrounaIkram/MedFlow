@@ -4,10 +4,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../lib/prisma";
 import { requireRole } from "../../../server/rbac";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req, res) {
   const session = await requireRole(req, res, ["ADMIN"]);
   if (!session) return;
-
   if (req.method === "GET") {
     const clinic = await prisma.clinic.findFirst({
       where: { ownerId: session.user.id },

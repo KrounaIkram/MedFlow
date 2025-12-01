@@ -9,19 +9,23 @@ datasource db {
 
 // ----- Utilisateurs -----
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String   @unique
-  password  String
-  role      Role     @default(PATIENT)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  name        String?
+  email       String   @unique
+  password    String
+  role        Role     @default(PATIENT)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  ownedClinic Clinic?  @relation("ClinicOwner")
 
   // Relations propres
   patients           Patient[]      @relation("OwnerPatients")
   doctorAppointments Appointment[]  @relation("DoctorAppointments")
   consultations      Consultation[] @relation("DoctorConsultations")
   prescriptions      Prescription[] @relation("DoctorPrescriptions")
+
+  clinicId String?
+  clinic   Clinic? @relation("ClinicStaff", fields: [clinicId], references: [id])
 }
 
 // ----- Patients -----
@@ -85,7 +89,7 @@ model Consultation {
 // ----- Ordonnance -----
 model Prescription {
   id             String       @id @default(cuid())
-  consultationId String      @unique
+  consultationId String       @unique
   consultation   Consultation @relation(fields: [consultationId], references: [id])
 
   doctorId  String
@@ -126,6 +130,31 @@ model Payment {
   status          PaymentStatus @default(PENDING)
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
+}
+
+model Clinic {
+  id      String  @id @default(cuid())
+  name    String
+  address String?
+  phone   String?
+  email   String?
+  logo    String?
+  ownerId String  @unique
+  owner   User    @relation("ClinicOwner", fields: [ownerId], references: [id])
+
+  services  Service[]
+  staff     User[]    @relation("ClinicStaff")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Service {
+  id        String   @id @default(cuid())
+  name      String
+  price     Int
+  clinicId  String
+  clinic    Clinic   @relation(fields: [clinicId], references: [id])
+  createdAt DateTime @default(now())
 }
 
 enum PaymentStatus {

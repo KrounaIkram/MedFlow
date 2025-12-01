@@ -1,6 +1,12 @@
 self.__BUILD_MANIFEST = {
-  "/receptionist/dashboard": [
-    "static/chunks/pages/receptionist/dashboard.js"
+  "/_error": [
+    "static/chunks/pages/_error.js"
+  ],
+  "/admin/dashboard": [
+    "static/chunks/pages/admin/dashboard.js"
+  ],
+  "/login": [
+    "static/chunks/pages/login.js"
   ],
   "__rewrites": {
     "afterFiles": [],
@@ -10,6 +16,7 @@ self.__BUILD_MANIFEST = {
   "sortedPages": [
     "/_app",
     "/_error",
+    "/admin/dashboard",
     "/api/admin/stats",
     "/api/appointments",
     "/api/appointments/[id]",
